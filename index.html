@@ -3,546 +3,287 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Entrusted - Mitigation Dashboard Pro</title>
-    <!-- Tailwind CSS -->
+    <title>Entrusted - Job Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Tailwind Configuration for Entrusted Theme -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        .printable-card { background: white; }
+    </style>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        primary: '#f97316', 
-                        sidebar: '#020617', 
-                        secondary: '#334155', 
+                        primary: '#f97316',
+                        primaryDark: '#ea580c',
+                        sidebar: '#0f172a',
                     },
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                    }
+                    fontFamily: { sans: ['Inter', 'sans-serif'] }
                 }
             }
         }
     </script>
-    <!-- FontAwesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <!-- html2canvas and jsPDF -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="styles.css">
 </head>
-<body class="bg-gray-50 flex h-screen overflow-hidden font-sans text-gray-800">
+<body class="bg-gray-100 text-gray-800 font-sans h-screen overflow-hidden flex">
 
-    <!-- Floating Toast Indicator -->
-    <div id="save-toast" class="fixed bottom-4 right-4 bg-emerald-600 text-white px-5 py-3 rounded-md shadow-lg font-semibold text-sm transition-opacity opacity-0 pointer-events-none z-50 flex items-center">
-        <i class="fa-solid fa-cloud-arrow-up mr-2 text-lg"></i>
-        Data Synced Locally
-    </div>
-
-    <!-- Sidebar Navigation -->
-    <aside class="w-64 bg-sidebar text-white shadow-xl flex flex-col shrink-0 z-20">
-        <!-- Brand -->
-        <div class="h-16 flex items-center px-6 border-b border-gray-800">
-            <i class="fa-solid fa-water text-primary text-xl mr-3"></i>
-            <span class="font-bold tracking-wider text-lg uppercase text-white">Entrusted</span>
-            <span class="ml-2 bg-primary text-white text-[9px] font-bold px-1.5 py-0.5 rounded uppercase tracking-widest mt-0.5">PRO</span>
+    <!-- SIDEBAR -->
+    <aside class="w-64 bg-sidebar text-gray-300 flex flex-col shrink-0">
+        <div class="h-16 flex items-center px-6 bg-black shadow shrink-0 border-b border-gray-800">
+            <div class="w-8 h-8 rounded bg-primary flex items-center justify-center font-bold text-white text-lg mr-3 shadow">E</div>
+            <h1 class="text-lg font-bold tracking-wide text-white">ENTRUSTED</h1>
         </div>
-        
-        <!-- Job Context Header -->
-        <div class="px-6 py-5 border-b border-gray-800 bg-black shadow-inner">
+        <nav class="flex-1 py-4 space-y-1 px-3 overflow-y-auto">
+            <p class="text-[10px] text-gray-500 font-bold uppercase tracking-wider mb-2 px-3">Job Views</p>
+            <button onclick="app.switchView('view-narrative')" class="nav-btn active w-full flex items-center text-left px-3 py-2.5 rounded-lg font-medium text-sm transition-colors text-white bg-gray-800" data-target="view-narrative">
+                <i class="fa-solid fa-folder-open w-5 text-center mr-3 text-primary"></i> 1. Docs & Photos
+            </button>
+            <button onclick="app.switchView('view-moisture')" class="nav-btn w-full flex items-center text-left px-3 py-2.5 rounded-lg font-medium text-sm transition-colors text-gray-400 hover:text-white hover:bg-gray-800" data-target="view-moisture">
+                <i class="fa-solid fa-droplet w-5 text-center mr-3 text-primary"></i> 2. Room Logs
+            </button>
+            <button onclick="app.switchView('view-demo')" class="nav-btn w-full flex items-center text-left px-3 py-2.5 rounded-lg font-medium text-sm transition-colors text-gray-400 hover:text-white hover:bg-gray-800" data-target="view-demo">
+                <i class="fa-solid fa-hammer w-5 text-center mr-3 text-primary"></i> 3. Demolition Scope
+            </button>
+            <button onclick="app.switchView('view-equipment')" class="nav-btn w-full flex items-center text-left px-3 py-2.5 rounded-lg font-medium text-sm transition-colors text-gray-400 hover:text-white hover:bg-gray-800" data-target="view-equipment">
+                <i class="fa-solid fa-fan w-5 text-center mr-3 text-primary"></i> 4. Equipment Setup
+            </button>
+            <button onclick="app.switchView('view-ops')" class="nav-btn w-full flex items-center text-left px-3 py-2.5 rounded-lg font-medium text-sm transition-colors text-gray-400 hover:text-white hover:bg-gray-800" data-target="view-ops">
+                <i class="fa-solid fa-clock-rotate-left w-5 text-center mr-3 text-primary"></i> 5. Ops & Time Logs
+            </button>
+        </nav>
+        <div class="px-6 py-5 border-t border-gray-800 bg-black shadow-inner">
             <p class="text-[10px] text-gray-400 uppercase tracking-widest font-semibold mb-1">Active Job</p>
             <h2 class="font-bold text-sm text-gray-100 truncate" id="sidebar-job-name">Loading...</h2>
             <p class="text-xs text-primary font-mono mt-0.5" id="sidebar-job-id">--</p>
         </div>
-
-        <!-- Navigation Links -->
-        <div class="flex-1 overflow-y-auto py-4">
-            <nav class="space-y-1 px-3">
-                <button onclick="app.switchView('view-story')" class="nav-btn w-full flex items-center px-3 py-2.5 text-sm font-medium rounded-md text-gray-300 hover:text-white hover:bg-gray-800 transition-colors active" data-target="view-story">
-                    <i class="fa-solid fa-book-open w-6 text-center text-primary mr-2"></i>
-                    1. Story & Timeline
-                </button>
-                <button onclick="app.switchView('view-equipment')" class="nav-btn w-full flex items-center px-3 py-2.5 text-sm font-medium rounded-md text-gray-300 hover:text-white hover:bg-gray-800 transition-colors" data-target="view-equipment">
-                    <i class="fa-solid fa-fan w-6 text-center text-primary mr-2"></i>
-                    2. Equipment & Mitigation
-                </button>
-                <button onclick="app.switchView('view-drylogs')" class="nav-btn w-full flex items-center px-3 py-2.5 text-sm font-medium rounded-md text-gray-300 hover:text-white hover:bg-gray-800 transition-colors" data-target="view-drylogs">
-                    <i class="fa-solid fa-droplet w-6 text-center text-primary mr-2"></i>
-                    3. Daily DryLogs
-                </button>
-                <button onclick="app.switchView('view-demo')" class="nav-btn w-full flex items-center px-3 py-2.5 text-sm font-medium rounded-md text-gray-300 hover:text-white hover:bg-gray-800 transition-colors" data-target="view-demo">
-                    <i class="fa-solid fa-hammer w-6 text-center text-primary mr-2"></i>
-                    4. Demolition & Review
-                </button>
-                <button onclick="app.switchView('view-ops')" class="nav-btn w-full flex items-center px-3 py-2.5 text-sm font-medium rounded-md text-gray-300 hover:text-white hover:bg-gray-800 transition-colors" data-target="view-ops">
-                    <i class="fa-solid fa-clipboard-user w-6 text-center text-primary mr-2"></i>
-                    5. Operations & Logs
-                </button>
-                <div class="mt-8 px-3">
-                    <button onclick="app.resetData()" class="w-full flex justify-center items-center px-3 py-2 text-[10px] font-bold uppercase tracking-widest border border-red-900 text-red-500 rounded hover:bg-red-950 transition-colors">
-                        <i class="fa-solid fa-trash mr-2"></i> Reset Local Data
-                    </button>
-                </div>
-            </nav>
-        </div>
     </aside>
 
-    <!-- Main Content Wrapper -->
-    <main class="flex-1 flex flex-col h-full overflow-hidden relative">
-        <!-- Topbar -->
-        <header class="bg-white shadow-sm flex items-center justify-between px-6 py-3 z-10 shrink-0">
-            <!-- Global Job Header (Compact) -->
-            <div id="card-job-info" class="flex flex-col justify-center printable-card w-5/12 p-2 rounded">
-                <input type="text" id="edit-job-name" class="font-bold text-gray-900 bg-transparent border-none focus:ring-0 p-0 text-xl w-full placeholder-gray-400" value="" onchange="app.updateField('job', 'name', this.value)" placeholder="Job Name...">
-                <div class="flex space-x-4 mt-2">
-                    <input type="text" id="edit-job-addr" class="text-xs text-gray-500 bg-transparent border-none focus:ring-0 p-0 w-full placeholder-gray-400" value="" onchange="app.updateField('job', 'address', this.value)" placeholder="Job Address...">
-                    <div class="flex items-center space-x-1 whitespace-nowrap">
-                        <span class="text-[10px] text-gray-400 font-bold uppercase">ID:</span>
-                        <input type="text" id="edit-job-id" class="text-xs font-mono text-gray-700 font-bold bg-transparent border-none focus:ring-0 p-0 w-20" value="" onchange="app.updateField('job', 'id', this.value)" placeholder="--">
-                    </div>
-                    <div class="flex items-center space-x-1 whitespace-nowrap">
-                        <span class="text-[10px] text-gray-400 font-bold uppercase">Claim:</span>
-                        <input type="text" id="edit-job-claim" class="text-xs font-mono text-gray-700 font-bold bg-transparent border-none focus:ring-0 p-0 w-28" value="" onchange="app.updateField('job', 'claim', this.value)" placeholder="--">
-                    </div>
+    <main class="flex-1 flex flex-col h-full relative overflow-hidden bg-gray-50">
+        <!-- GLOBAL HEADER -->
+        <header class="bg-white border-b border-gray-200 px-8 py-5 shrink-0 shadow-sm z-10 flex flex-col xl:flex-row justify-between items-start xl:items-center">
+            <div id="card-job-info" class="printable-card mb-4 xl:mb-0 w-full xl:w-auto relative">
+                <div class="flex items-center space-x-3 mb-1">
+                    <h1 class="text-2xl font-black text-gray-900 tracking-tight" id="header-name">Loading...</h1>
+                    <span class="bg-gray-100 text-gray-600 text-[10px] px-2 py-0.5 rounded font-mono font-bold border border-gray-200">CLAIM: <span id="header-claim">--</span></span>
                 </div>
+                <p class="text-sm font-semibold text-gray-500" id="header-address">...</p>
             </div>
-
-            <!-- Global Search -->
-            <div class="flex items-center space-x-3 w-full max-w-sm relative mx-4">
-                <i class="fa-solid fa-search absolute left-3 text-gray-400 z-10"></i>
-                <input type="text" id="global-search" placeholder="Search globally..." 
-                    class="w-full pl-10 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:bg-white transition-all">
-            </div>
-            
-            <!-- 4-Button Report Action Bar -->
-            <div class="flex items-center space-x-2 shrink-0">
-                <button onclick="app.generateCombinedPDF('24hr')" class="flex items-center px-3 py-2 bg-white border border-gray-200 text-gray-700 hover:border-primary hover:text-primary rounded-md text-xs font-semibold transition-colors shadow-sm">
-                    <i class="fa-solid fa-clock mr-1.5"></i> 24-HR Report
-                </button>
-                <button onclick="app.generateCombinedPDF('dmo')" class="flex items-center px-3 py-2 bg-white border border-gray-200 text-gray-700 hover:border-primary hover:text-primary rounded-md text-xs font-semibold transition-colors shadow-sm">
-                    <i class="fa-solid fa-hammer mr-1.5"></i> DMO Approval
-                </button>
-                <button onclick="app.generateCombinedPDF('adjuster')" class="flex items-center px-3 py-2 bg-sidebar border border-gray-800 text-white hover:bg-gray-800 rounded-md text-xs font-semibold transition-colors shadow-sm">
-                    <i class="fa-solid fa-file-pdf mr-1.5 text-primary"></i> Adjuster Report
-                </button>
-                <button onclick="app.generateCombinedPDF('photo')" class="flex items-center px-3 py-2 bg-orange-50 border border-orange-200 text-orange-700 hover:bg-orange-100 rounded-md text-xs font-semibold transition-colors shadow-sm">
-                    <i class="fa-solid fa-images mr-1.5"></i> Photo Report
-                </button>
+            <div class="flex flex-wrap gap-2 w-full xl:w-auto justify-end">
+                <button onclick="app.generatePDF('24hr')" class="bg-gray-800 hover:bg-gray-900 text-white px-3 py-2 rounded text-[11px] font-bold uppercase tracking-wide shadow"><i class="fa-regular fa-file-pdf mr-1 text-red-400"></i> 24-HR</button>
+                <button onclick="app.generatePDF('dmo')" class="bg-gray-800 hover:bg-gray-900 text-white px-3 py-2 rounded text-[11px] font-bold uppercase tracking-wide shadow"><i class="fa-regular fa-file-pdf mr-1 text-indigo-400"></i> DMO</button>
+                <button onclick="app.generatePDF('adjuster')" class="bg-gray-800 hover:bg-gray-900 text-white px-3 py-2 rounded text-[11px] font-bold uppercase tracking-wide shadow"><i class="fa-solid fa-file-pdf mr-1 text-blue-400"></i> Adjuster</button>
+                <button onclick="app.generatePDF('photo')" class="bg-gray-800 hover:bg-gray-900 text-white px-3 py-2 rounded text-[11px] font-bold uppercase tracking-wide shadow"><i class="fa-regular fa-image mr-1 text-emerald-400"></i> Photos</button>
+                <button onclick="app.generatePDF('3k')" class="bg-primary hover:bg-primaryDark text-white px-4 py-2 rounded text-[11px] font-bold uppercase tracking-wide shadow ml-2"><i class="fa-solid fa-sack-dollar mr-1"></i> Generate $3k Limit Request</button>
             </div>
         </header>
 
-        <!-- Scrollable Views Area -->
-        <div class="flex-1 overflow-y-auto p-8 relative bg-white">
-            
-            <!-- VIEW 1: Job Narrative & Timeline -->
-            <section id="view-story" class="view-section active space-y-6">
-                <!-- Timeline Header -->
-                <details id="card-timeline" class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden printable-card group" open>
-                    <summary class="p-5 border-b border-gray-100 bg-gray-50 flex justify-between items-center cursor-pointer select-none">
-                        <h3 class="font-semibold text-gray-800 flex items-center">
-                            <i class="fa-solid fa-timeline text-primary mr-2"></i> Job Lifecycle & Progression
-                        </h3>
-                        <div class="flex items-center">
-                            <button onclick="app.exportToPDF('card-timeline')" class="opacity-0 group-hover:opacity-100 transition-opacity text-xs bg-white border border-gray-200 text-gray-600 px-2 py-1 rounded hover:bg-gray-50 mr-4">
-                                <i class="fa-solid fa-download mr-1"></i> PDF
-                            </button>
-                            <i class="fa-solid fa-chevron-down text-gray-400 group-open:rotate-180 transition-transform"></i>
-                        </div>
-                    </summary>
-                    <div class="p-6">
-                        <!-- Horizontal Summary Stats -->
-                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6 pb-6 border-b border-gray-100" id="timeline-stats">
-                        </div>
-                        <!-- Vertical 3-Phase Timeline -->
-                        <div class="relative border-l-2 border-orange-200 ml-3 space-y-8" id="timeline-content">
-                        </div>
-                    </div>
-                </details>
+        <!-- VIEWS WRAPPER -->
+        <div class="flex-1 overflow-y-auto p-8 relative">
 
-                <!-- Job Story Narrative -->
-                <details id="card-job-story" class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden printable-card group" open>
-                    <summary class="p-5 border-b border-gray-100 bg-gray-50 flex justify-between items-center cursor-pointer select-none">
-                        <h3 class="font-semibold text-gray-800 flex items-center">
-                            <i class="fa-solid fa-pen-nib text-primary mr-2"></i> The Job Story
-                        </h3>
-                        <div class="flex items-center">
-                            <button onclick="app.exportToPDF('card-job-story')" class="opacity-0 group-hover:opacity-100 transition-opacity text-xs bg-white border border-gray-200 text-gray-600 px-2 py-1 rounded hover:bg-gray-50 mr-4">
-                                <i class="fa-solid fa-download mr-1"></i> PDF
-                            </button>
-                            <i class="fa-solid fa-chevron-down text-gray-400 group-open:rotate-180 transition-transform"></i>
-                        </div>
-                    </summary>
-                    <div class="p-6 text-gray-700 leading-relaxed text-sm">
-                        <textarea id="edit-job-story" class="w-full min-h-[150px] bg-transparent border-gray-200 rounded p-3 focus:ring-primary focus:border-primary text-sm" onchange="app.updateField('story', null, this.value)"></textarea>
-                    </div>
-                </details>
+            <!-- TAB 1: NARRATIVE, DOCS, PHOTOS & SKETCHES -->
+            <section id="view-narrative" class="view-section active space-y-6 max-w-6xl mx-auto">
+                <h1 class="text-3xl font-black text-gray-900 tracking-tight border-b-2 border-primary pb-2 inline-block mb-2">Job Number: <span id="tab1-job-number" class="text-primary">--</span></h1>
 
-                <!-- Categorized Photo Gallery -->
-                <details id="card-photo-gallery" class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden printable-card group" open>
-                    <summary class="p-5 border-b border-gray-100 bg-gray-50 flex justify-between items-center cursor-pointer select-none">
-                        <h3 class="font-semibold text-gray-800 flex items-center">
-                            <i class="fa-solid fa-camera text-primary mr-2"></i> Photo Documentation
-                        </h3>
-                        <div class="flex items-center">
-                            <i class="fa-solid fa-chevron-down text-gray-400 group-open:rotate-180 transition-transform"></i>
-                        </div>
-                    </summary>
-                    <div class="px-5 py-3 border-b border-gray-100 bg-white flex flex-col md:flex-row md:items-center justify-between gap-4">
-                        <div class="flex space-x-2">
-                            <button onclick="app.renderPhotos('all')" class="photo-filter-btn active px-3 py-1.5 text-xs font-semibold rounded-full bg-sidebar text-white transition-colors">View All</button>
-                            <button onclick="app.renderPhotos('room')" class="photo-filter-btn px-3 py-1.5 text-xs font-semibold rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors">Sort by Room</button>
-                            <button onclick="app.renderPhotos('date')" class="photo-filter-btn px-3 py-1.5 text-xs font-semibold rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors">Sort by Date</button>
-                        </div>
-                        
-                        <!-- Photo Upload Module -->
-                        <div class="flex items-center">
-                            <input type="text" id="photo-room-input" placeholder="Room/Location..." class="text-xs border-gray-300 rounded-l mr-[-1px] z-10 focus:ring-primary focus:border-primary h-8 max-w-[120px]">
-                            <label class="px-3 cursor-pointer bg-orange-50 border border-orange-200 text-primary hover:bg-orange-100 rounded-r text-xs font-semibold flex items-center h-8 transition-colors">
-                                <i class="fa-solid fa-upload mr-1.5"></i> Add Photos
-                                <input type="file" id="photo-upload-input" class="hidden" multiple accept="image/*" onchange="app.handlePhotoUpload(event)">
-                            </label>
-                        </div>
-                    </div>
-                    <div class="p-6">
-                        <div id="photo-gallery-content">
-                        </div>
-                    </div>
-                </details>
-                <!-- Floor Plans & Measurements -->
-                <details id="card-floor-plans" class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden printable-card group" open>
-                    <summary class="p-5 border-b border-gray-100 bg-gray-50 flex justify-between items-center cursor-pointer select-none">
-                        <h3 class="font-semibold text-gray-800 flex items-center">
-                            <i class="fa-solid fa-ruler-combined text-primary mr-2"></i> Floor Plans & Measurements
-                        </h3>
-                        <div class="flex items-center">
-                            <button onclick="app.exportToPDF('card-floor-plans')" class="opacity-0 group-hover:opacity-100 transition-opacity text-xs bg-white border border-gray-200 text-gray-600 px-2 py-1 rounded hover:bg-gray-50 mr-4">
-                                <i class="fa-solid fa-download mr-1"></i> PDF
-                            </button>
-                            <i class="fa-solid fa-chevron-down text-gray-400 group-open:rotate-180 transition-transform"></i>
-                        </div>
-                    </summary>
-                    <div class="p-6">
-                        <div class="mb-6 rounded-lg overflow-hidden border border-gray-200 relative bg-gray-100 w-full h-80 flex items-center justify-center">
-                            <img src="https://placehold.co/1200x600/1f2937/ffffff?font=raleway&text=2D+Mitigation+Floor+Plan+Sketch" alt="Floor Plan" class="object-cover w-full h-full opacity-90">
-                        </div>
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-left text-sm text-gray-600">
-                                <thead class="bg-gray-50 text-xs uppercase font-semibold text-gray-700">
-                                    <tr>
-                                        <th class="px-6 py-3">Room</th>
-                                        <th class="px-6 py-3 text-right">Length (ft)</th>
-                                        <th class="px-6 py-3 text-right">Width (ft)</th>
-                                        <th class="px-6 py-3 text-right font-bold text-gray-900">Total SQFT</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="floor-plan-tbody" class="divide-y divide-gray-100">
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </details>
+                <div id="card-story" class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 printable-card relative mt-4">
+                    <button onclick="app.exportToPDF('card-story')" class="absolute top-4 right-4 bg-gray-100 hover:bg-gray-200 text-gray-600 px-3 py-1 rounded text-[10px] font-bold uppercase"><i class="fa fa-print mr-1"></i> PDF</button>
+                    <h2 class="text-lg font-bold text-gray-900 mb-4 flex items-center"><i class="fa-solid fa-book-open text-primary mr-2"></i> Job Story Narrative</h2>
+                    <p class="text-sm text-gray-700 leading-relaxed font-medium whitespace-pre-wrap bg-gray-50 p-4 rounded border border-gray-100" id="story-content"></p>
+                </div>
 
-            </section>
+                <!-- AVAILABLE DOCUMENTS -->
+                <div id="card-docs" class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 printable-card relative mt-6">
+                    <button onclick="app.exportToPDF('card-docs')" class="absolute top-4 right-4 bg-gray-100 hover:bg-gray-200 text-gray-600 px-3 py-1 rounded text-[10px] font-bold uppercase"><i class="fa fa-print mr-1"></i> PDF</button>
+                    <h2 class="text-lg font-bold text-gray-900 mb-6 flex items-center"><i class="fa-regular fa-folder-open text-primary mr-2"></i> Available Documents</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="docs-content"></div>
+                </div>
 
-            <!-- VIEW 2: Equipment & Drying Progression -->
-            <section id="view-equipment" class="view-section hidden space-y-6">
-                <!-- Chamber Setup -->
-                <details id="card-chamber-setup" class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden printable-card group" open>
-                    <summary class="p-5 border-b border-gray-100 bg-gray-50 flex justify-between items-center cursor-pointer select-none">
-                        <h3 class="font-semibold text-gray-800 flex items-center">
-                            <i class="fa-solid fa-cube text-primary mr-2"></i> Chamber Setup
-                        </h3>
-                        <div class="flex items-center">
-                            <button onclick="app.exportToPDF('card-chamber-setup')" class="opacity-0 group-hover:opacity-100 transition-opacity text-xs bg-white border border-gray-200 text-gray-600 px-2 py-1 rounded hover:bg-gray-50 mr-4">
-                                <i class="fa-solid fa-download mr-1"></i> PDF
-                            </button>
-                            <i class="fa-solid fa-chevron-down text-gray-400 group-open:rotate-180 transition-transform"></i>
-                        </div>
-                    </summary>
-                    <div class="p-6 flex flex-col md:flex-row md:items-center gap-6" id="chamber-info-content">
-                    </div>
-                </details>
-
-                <!-- Enhanced Equipment Tracking -->
-                <details id="card-equipment-inventory" class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden printable-card group" open>
-                    <summary class="p-5 border-b border-gray-100 bg-gray-50 flex justify-between items-center cursor-pointer select-none">
-                        <h3 class="font-semibold text-gray-800 flex items-center">
-                            <i class="fa-solid fa-fan text-primary mr-2"></i> Equipment Inventory
-                        </h3>
-                        <div class="flex items-center">
-                            <button onclick="app.exportToPDF('card-equipment-inventory')" class="opacity-0 group-hover:opacity-100 transition-opacity text-xs bg-white border border-gray-200 text-gray-600 px-2 py-1 rounded hover:bg-gray-50 mr-4">
-                                <i class="fa-solid fa-download mr-1"></i> PDF
-                            </button>
-                            <i class="fa-solid fa-chevron-down text-gray-400 group-open:rotate-180 transition-transform"></i>
-                        </div>
-                    </summary>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left text-sm text-gray-600">
-                            <thead class="bg-gray-50 text-xs uppercase font-semibold text-gray-700">
-                                <tr>
-                                    <th class="px-6 py-3">Install Date</th>
-                                    <th class="px-6 py-3">Pull Date</th>
-                                    <th class="px-6 py-3">Total Days</th>
-                                    <th class="px-6 py-3">Equipment Type</th>
-                                    <th class="px-6 py-3">Chamber #</th>
-                                    <th class="px-6 py-3">Specific Room</th>
-                                    <th class="px-6 py-3 text-right">Power (kW)</th>
-                                    <th class="px-6 py-3 text-right font-bold text-gray-900">Est. Energy (kWh)</th>
-                                    <th class="px-6 py-3">Notes</th>
-                                </tr>
-                            </thead>
-                            <tbody id="equipment-inventory-tbody" class="divide-y divide-gray-100">
-                            </tbody>
-                        </table>
-                    </div>
-                </details>
-            </section>
-
-            <!-- VIEW 3: Psychrometric & Moisture Monitoring -->
-            <section id="view-drylogs" class="view-section hidden space-y-6">
-                <!-- Atmospheric Log & Auto-Psychrometric Engine -->
-                <details id="card-atmospheric-log" class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden printable-card group" open>
-                    <summary class="p-5 border-b border-gray-100 bg-gray-50 flex justify-between items-center cursor-pointer select-none">
-                        <h3 class="font-semibold text-gray-800 flex items-center">
-                            <i class="fa-solid fa-cloud-sun text-primary mr-2"></i> Atmospheric Log
-                        </h3>
-                        <div class="flex items-center">
-                            <button onclick="app.exportToPDF('card-atmospheric-log')" class="opacity-0 group-hover:opacity-100 transition-opacity text-xs bg-white border border-gray-200 text-gray-600 px-2 py-1 rounded hover:bg-gray-50 mr-4">
-                                <i class="fa-solid fa-download mr-1"></i> PDF
-                            </button>
-                            <i class="fa-solid fa-chevron-down text-gray-400 group-open:rotate-180 transition-transform"></i>
-                        </div>
-                    </summary>
-                    <div class="p-5 border-b border-gray-100 bg-gradient-to-r from-orange-50 to-white">
-                        <h4 class="text-xs font-bold text-primary uppercase tracking-wider mb-3"><i class="fa-solid fa-calculator mr-1"></i> Auto-Psychrometric Engine Entry</h4>
-                        <div class="flex flex-wrap gap-4 items-end">
-                            <div>
-                                <label class="block text-[10px] font-semibold text-gray-500 uppercase mb-1">Date</label>
-                                <input type="text" id="psych-date" class="w-24 text-sm border-gray-300 rounded focus:ring-primary focus:border-primary p-1.5" placeholder="MM/DD">
-                            </div>
-                            <div class="bg-white p-2 border border-blue-100 rounded shadow-sm">
-                                <label class="block text-[10px] font-semibold text-blue-800 uppercase mb-1 text-center">Outside</label>
-                                <div class="flex space-x-1">
-                                    <input type="number" id="psych-out-t" class="w-14 text-sm border-gray-300 rounded p-1 text-center" placeholder="°F">
-                                    <input type="number" id="psych-out-rh" class="w-14 text-sm border-gray-300 rounded p-1 text-center" placeholder="%">
-                                </div>
-                            </div>
-                            <div class="bg-white p-2 border border-gray-100 rounded shadow-sm">
-                                <label class="block text-[10px] font-semibold text-gray-800 uppercase mb-1 text-center">Unaffected</label>
-                                <div class="flex space-x-1">
-                                    <input type="number" id="psych-un-t" class="w-14 text-sm border-gray-300 rounded p-1 text-center" placeholder="°F">
-                                    <input type="number" id="psych-un-rh" class="w-14 text-sm border-gray-300 rounded p-1 text-center" placeholder="%">
-                                </div>
-                            </div>
-                            <div class="bg-white p-2 border border-orange-200 rounded shadow-sm">
-                                <label class="block text-[10px] font-semibold text-orange-800 uppercase mb-1 text-center">Chamber</label>
-                                <div class="flex space-x-1">
-                                    <input type="number" id="psych-ch-t" class="w-14 text-sm border-orange-300 rounded p-1 text-center focus:ring-primary" placeholder="°F">
-                                    <input type="number" id="psych-ch-rh" class="w-14 text-sm border-orange-300 rounded p-1 text-center focus:ring-primary" placeholder="%">
-                                </div>
-                            </div>
-                            <div class="bg-white p-2 border border-red-200 rounded shadow-sm">
-                                <label class="block text-[10px] font-semibold text-red-800 uppercase mb-1 text-center">Dehu Out</label>
-                                <div class="flex space-x-1">
-                                    <input type="number" id="psych-de-t" class="w-14 text-sm border-red-300 rounded p-1 text-center focus:ring-red-500" placeholder="°F">
-                                    <input type="number" id="psych-de-rh" class="w-14 text-sm border-red-300 rounded p-1 text-center focus:ring-red-500" placeholder="%">
-                                </div>
-                            </div>
-                            <button onclick="app.addPsychEntry()" class="bg-primary text-white font-semibold text-xs px-4 py-2 rounded shadow hover:bg-orange-600 transition-colors h-[38px]">
-                                Add DryLog
-                            </button>
-                        </div>
-                    </div>
+                <!-- DIGITAL SKETCH PAD -->
+                <div id="card-sketch" class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 printable-card relative mt-6">
+                    <button onclick="app.exportToPDF('card-sketch')" class="absolute top-4 right-24 bg-gray-100 hover:bg-gray-200 text-gray-600 px-3 py-1 rounded text-[10px] font-bold uppercase"><i class="fa fa-print mr-1"></i> PDF</button>
+                     <div class="absolute top-4 right-4" id="sketch-controls">
+                        <button onclick="app.clearSketch()" class="bg-red-50 text-red-600 border border-red-200 hover:bg-red-100 px-3 py-1 rounded text-[10px] font-bold uppercase tracking-wide"><i class="fa-solid fa-eraser mr-1"></i> Clear</button>
+                     </div>
+                    <h2 class="text-lg font-bold text-gray-900 mb-6 flex items-center"><i class="fa-solid fa-pen-nib text-primary mr-2"></i> Job Site Sketch</h2>
                     
-                    <!-- TECH GUIDE HELPER (NEW PANEL) -->
-                    <div class="m-5 p-5 bg-blue-50 border border-blue-200 rounded-lg shadow-sm">
-                        <h4 class="font-bold text-blue-900 text-sm flex items-center mb-3"><i class="fa-solid fa-graduation-cap text-blue-600 mr-2 text-lg"></i> Tech Guide: How to Justify Your Equipment</h4>
-                        <ul class="text-xs text-blue-800 space-y-2.5 list-disc pl-5 leading-relaxed">
-                            <li><strong>Grain Depression (Dehumidifier Efficiency):</strong> The Dehu Outlet GPP must be lower than the Chamber GPP. This proves the machine is actively pulling water out of the air. <em class="text-blue-600 font-semibold bg-blue-100 px-1 rounded block mt-1">(e.g., Chamber is 88 GPP, Dehu Out is 38 GPP = 50 GPP Grain Depression. This proves the dehu is working!)</em></li>
-                            <li><strong>Air Mover Sizing:</strong> Calculate 1 air mover per inset/offset greater than 18 inches, plus the standard square footage calculations for flooring and walls.</li>
-                            <li><strong>Dehumidifier Sizing (AHAM):</strong> Log the exact Cubic Footage (L x W x H) and the Class of Water to prove the AHAM pint capacity installed matches the IICRC S500 requirements.</li>
-                        </ul>
+                    <div class="border-2 border-dashed border-gray-300 rounded-lg overflow-hidden bg-gray-50 flex items-center justify-center h-80 relative">
+                        <canvas id="sketch-pad" class="absolute top-0 left-0 w-full h-full cursor-crosshair"></canvas>
+                        <i class="fa-solid fa-pencil text-gray-200 text-9xl absolute pointer-events-none opacity-20"></i>
                     </div>
+                </div>
+
+                <!-- PHOTO GALLERY -->
+                <div id="card-photos" class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 printable-card relative mt-6">
+                    <button onclick="app.exportToPDF('card-photos')" class="absolute top-4 right-4 bg-gray-100 hover:bg-gray-200 text-gray-600 px-3 py-1 rounded text-[10px] font-bold uppercase"><i class="fa fa-print mr-1"></i> PDF</button>
+                    <h2 class="text-lg font-bold text-gray-900 mb-6 flex items-center"><i class="fa-solid fa-camera text-primary mr-2"></i> Advanced Photo Gallery</h2>
                     
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left text-sm text-gray-600">
-                            <thead class="bg-gray-50 text-xs uppercase font-semibold text-gray-700">
-                                <tr>
-                                    <th class="px-6 py-3">Date</th>
-                                    <th class="px-6 py-3">Outside Temp/RH</th>
-                                    <th class="px-6 py-3">Unaffected Temp/RH</th>
-                                    <th class="px-6 py-3">Chamber Temp/RH</th>
-                                    <th class="px-6 py-3">Dehu Out Temp/RH</th>
-                                    <th class="px-6 py-3 bg-blue-50">Specific Humidity</th>
-                                    <th class="px-6 py-3 text-orange-700"><i class="fa-solid fa-droplet text-orange-500 mr-1"></i> Grains of Depression</th>
-                                </tr>
-                            </thead>
-                            <tbody id="atmospheric-log-tbody" class="divide-y divide-gray-100">
-                            </tbody>
-                        </table>
-                    </div>
-                </details>
-
-                <!-- Moisture Mapping -->
-                <details id="card-moisture-mapping" class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden printable-card group" open>
-                    <summary class="p-5 border-b border-gray-100 bg-gray-50 flex justify-between items-center cursor-pointer select-none">
-                        <h3 class="font-semibold text-gray-800 flex items-center">
-                            <i class="fa-solid fa-water text-primary mr-2"></i> Material Moisture Mapping
-                        </h3>
-                        <div class="flex items-center">
-                            <button onclick="app.exportToPDF('card-moisture-mapping')" class="opacity-0 group-hover:opacity-100 transition-opacity text-xs bg-white border border-gray-200 text-gray-600 px-2 py-1 rounded hover:bg-gray-50 mr-4">
-                                <i class="fa-solid fa-download mr-1"></i> PDF
-                            </button>
-                            <i class="fa-solid fa-chevron-down text-gray-400 group-open:rotate-180 transition-transform"></i>
+                    <!-- Search & Filter Controls -->
+                    <div class="flex flex-col sm:flex-row gap-4 mb-6 bg-gray-50 p-4 rounded-lg border border-gray-100 items-end" id="photo-controls">
+                        <div class="flex-1 w-full">
+                            <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1">Photo Search</label>
+                            <div class="relative">
+                                <i class="fa-solid fa-search absolute left-3 top-2.5 text-gray-400"></i>
+                                <input type="text" id="photo-search" placeholder="Search captions, tags, limits..." class="w-full pl-9 pr-4 py-2 bg-white border border-gray-300 text-sm rounded-md focus:outline-none focus:ring-1 focus:ring-primary">
+                            </div>
                         </div>
-                    </summary>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left text-sm text-gray-600">
-                            <thead class="bg-gray-50 text-xs uppercase font-semibold text-gray-700">
-                                <tr>
-                                    <th class="px-6 py-3">Room</th>
-                                    <th class="px-6 py-3">Material</th>
-                                    <th class="px-6 py-3">Surface Temp</th>
-                                    <th class="px-6 py-3">Dry Standard</th>
-                                    <th class="px-6 py-3">Day 1</th>
-                                    <th class="px-6 py-3">Day 2</th>
-                                    <th class="px-6 py-3">Day 3</th>
-                                    <th class="px-6 py-3">Final</th>
-                                </tr>
-                            </thead>
-                            <tbody id="moisture-mapping-tbody" class="divide-y divide-gray-100">
-                            </tbody>
-                        </table>
+                        <div class="w-full sm:w-48">
+                            <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1">Filter by Room</label>
+                            <select id="photo-room-filter" class="w-full px-3 py-2 bg-white border border-gray-300 text-sm rounded-md focus:outline-none focus:ring-1 focus:ring-primary">
+                                <option value="All">All Rooms</option>
+                            </select>
+                        </div>
                     </div>
-                </details>
+
+                    <div id="photos-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6"></div>
+                </div>
             </section>
 
-            <!-- VIEW 4: Demolition & AI Adjuster Review -->
-            <section id="view-demo" class="view-section hidden space-y-6">
-                <!-- Demo Scope -->
-                <details id="card-demo-scope" class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden printable-card group" open>
-                    <summary class="p-5 border-b border-gray-100 bg-gray-50 flex justify-between items-center cursor-pointer select-none">
-                        <h3 class="font-semibold text-gray-800 flex items-center">
-                            <i class="fa-solid fa-hammer text-primary mr-2"></i> Demolition Scope & Justifications
-                        </h3>
-                        <div class="flex items-center">
-                            <button onclick="app.exportToPDF('card-demo-scope')" class="opacity-0 group-hover:opacity-100 transition-opacity text-xs bg-white border border-gray-200 text-gray-600 px-2 py-1 rounded hover:bg-gray-50 mr-4">
-                                <i class="fa-solid fa-download mr-1"></i> PDF
-                            </button>
-                            <i class="fa-solid fa-chevron-down text-gray-400 group-open:rotate-180 transition-transform"></i>
-                        </div>
-                    </summary>
-                    <div class="overflow-x-auto">
+            <!-- TAB 2: ROOM MOISTURE LOGS -->
+            <section id="view-moisture" class="view-section hidden space-y-6 max-w-6xl mx-auto">
+                <div id="card-psych" class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 printable-card relative">
+                    <button onclick="app.exportToPDF('card-psych')" class="absolute top-4 right-4 bg-gray-100 hover:bg-gray-200 text-gray-600 px-3 py-1 rounded text-[10px] font-bold uppercase"><i class="fa fa-print mr-1"></i> PDF</button>
+                    <h2 class="text-lg font-bold text-gray-900 mb-6 flex items-center"><i class="fa-solid fa-droplet text-primary mr-2"></i> Room Logs (Psychrometric & Moisture)</h2>
+
+                    <h3 class="font-bold text-gray-800 mb-3 text-sm">Atmospheric Log Table</h3>
+                    <div class="overflow-x-auto rounded-lg border border-gray-200 shadow-sm mb-8">
                         <table class="w-full text-left text-sm text-gray-600">
-                            <thead class="bg-gray-50 text-xs uppercase font-semibold text-gray-700">
+                            <thead class="bg-gray-100 text-[10px] uppercase font-bold text-gray-700 tracking-wider">
                                 <tr>
-                                    <th class="px-6 py-3">Room</th>
-                                    <th class="px-6 py-3">Material Removed</th>
-                                    <th class="px-6 py-3 whitespace-nowrap">Quantity</th>
-                                    <th class="px-6 py-3 text-center">After Hrs</th>
-                                    <th class="px-6 py-3 w-1/2">Justification for Removal</th>
+                                    <th class="px-6 py-4">Date</th>
+                                    <th class="px-6 py-4">Outside<br/><span class="text-gray-400 font-normal">T/RH</span></th>
+                                    <th class="px-6 py-4">Unaffected<br/><span class="text-gray-400 font-normal">T/RH</span></th>
+                                    <th class="px-6 py-4">Chamber<br/><span class="text-gray-400 font-normal">T/RH/SH</span></th>
+                                    <th class="px-6 py-4 text-center">Dehu Out<br/><span class="text-gray-400 font-normal">T/RH/SH</span></th>
+                                    <th class="px-6 py-4 text-center bg-gray-50 border-l border-gray-200">Grain<br/>Depression</th>
                                 </tr>
                             </thead>
-                            <tbody id="demo-scope-tbody" class="divide-y divide-gray-100">
-                            </tbody>
+                            <tbody id="atmospheric-tbody" class="divide-y divide-gray-100 bg-white"></tbody>
                         </table>
                     </div>
-                </details>
 
-
-                <!-- AI Pushback -->
-                <details id="card-ai-pushback" class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden printable-card group" open>
-                    <summary class="p-5 border-b border-gray-100 bg-gray-50 flex justify-between items-center cursor-pointer select-none">
-                        <h3 class="font-semibold text-gray-800 flex items-center">
-                            <i class="fa-solid fa-robot text-primary mr-2"></i> AI Adjuster Review Analysis
-                        </h3>
-                        <div class="flex items-center">
-                            <button onclick="app.exportToPDF('card-ai-pushback')" class="opacity-0 group-hover:opacity-100 transition-opacity text-xs bg-white border border-gray-200 text-gray-600 px-2 py-1 rounded hover:bg-gray-50 mr-4">
-                                <i class="fa-solid fa-download mr-1"></i> PDF
-                            </button>
-                            <i class="fa-solid fa-chevron-down text-gray-400 group-open:rotate-180 transition-transform"></i>
-                        </div>
-                    </summary>
-                    <div class="p-6">
-                        <div class="space-y-4" id="ai-pushback-content">
-                        </div>
-                    </div>
-                </details>
-            </section>
-
-            <!-- VIEW 5: Operations, Time Logs & Site Conditions -->
-            <section id="view-ops" class="view-section hidden space-y-6">
-                <!-- Tech Time Logs -->
-                <details id="card-time-logs" class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden printable-card group" open>
-                    <summary class="p-5 border-b border-gray-100 bg-gray-50 flex justify-between items-center cursor-pointer select-none">
-                        <h3 class="font-semibold text-gray-800 flex items-center">
-                            <i class="fa-solid fa-user-clock text-primary mr-2"></i> Technician Time Logs
-                        </h3>
-                        <div class="flex items-center">
-                            <button onclick="app.exportToPDF('card-time-logs')" class="opacity-0 group-hover:opacity-100 transition-opacity text-xs bg-white border border-gray-200 text-gray-600 px-2 py-1 rounded hover:bg-gray-50 mr-4">
-                                <i class="fa-solid fa-download mr-1"></i> PDF
-                            </button>
-                            <i class="fa-solid fa-chevron-down text-gray-400 group-open:rotate-180 transition-transform"></i>
-                        </div>
-                    </summary>
-                    <div class="p-5 border-b border-gray-100 bg-indigo-50 flex justify-around text-center">
-                        <div>
-                            <p class="text-[10px] text-indigo-800 uppercase font-bold tracking-wider mb-1">Total days technician(s) present on jobsite</p>
-                            <p class="text-3xl font-black text-indigo-900" id="metric-days">0</p>
-                        </div>
-                        <div>
-                            <p class="text-[10px] text-indigo-800 uppercase font-bold tracking-wider mb-1">Total days preformed check & service</p>
-                            <p class="text-3xl font-black text-indigo-900" id="metric-checks">0</p>
-                        </div>
-                    </div>
-                    <div class="overflow-x-auto">
+                    <h3 class="font-bold text-gray-800 mb-3 text-sm">Material Moisture Mapping</h3>
+                    <div class="overflow-x-auto rounded-lg border border-gray-200 shadow-sm">
                         <table class="w-full text-left text-sm text-gray-600">
-                            <thead class="bg-gray-50 text-xs uppercase font-semibold text-gray-700">
+                            <thead class="bg-gray-100 text-[10px] uppercase font-bold text-gray-700 tracking-wider">
                                 <tr>
-                                    <th class="px-6 py-3">Date</th>
-                                    <th class="px-6 py-3">Tech Name(s)</th>
-                                    <th class="px-6 py-3">Arrival Time</th>
-                                    <th class="px-6 py-3">Ending Time</th>
-                                    <th class="px-6 py-3 text-right">Travel (Mins)</th>
-                                    <th class="px-6 py-3 text-right">Demo (Mins)</th>
-                                    <th class="px-6 py-3 text-right">During Hrs</th>
-                                    <th class="px-6 py-3 text-right">After Hrs</th>
+                                    <th class="px-6 py-4">Room</th>
+                                    <th class="px-6 py-4">Material</th>
+                                    <th class="px-6 py-4 text-center">Surface Temp (°F)</th>
+                                    <th class="px-6 py-4 text-center text-gray-500">Dry Standard %</th>
+                                    <th class="px-6 py-4 text-center">Day 1</th>
+                                    <th class="px-6 py-4 text-center">Day 2</th>
+                                    <th class="px-6 py-4 text-center">Day 3</th>
                                 </tr>
                             </thead>
-                            <tbody id="time-logs-tbody" class="divide-y divide-gray-100">
-                            </tbody>
+                            <tbody id="moisture-tbody" class="divide-y divide-gray-100 bg-white"></tbody>
                         </table>
                     </div>
-                </details>
-
-                <!-- Generals & Site Conditions -->
-                <details id="card-site-conditions" class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden printable-card group" open>
-                    <summary class="p-5 border-b border-gray-100 bg-gray-50 flex justify-between items-center cursor-pointer select-none">
-                        <h3 class="font-semibold text-gray-800 flex items-center">
-                            <i class="fa-solid fa-hard-hat text-primary mr-2"></i> Generals, PPE & Site Conditions
-                        </h3>
-                        <div class="flex items-center">
-                            <button onclick="app.exportToPDF('card-site-conditions')" class="opacity-0 group-hover:opacity-100 transition-opacity text-xs bg-white border border-gray-200 text-gray-600 px-2 py-1 rounded hover:bg-gray-50 mr-4">
-                                <i class="fa-solid fa-download mr-1"></i> PDF
-                            </button>
-                            <i class="fa-solid fa-chevron-down text-gray-400 group-open:rotate-180 transition-transform"></i>
-                        </div>
-                    </summary>
-                    <div class="p-6 text-sm" id="site-conditions-content">
-                    </div>
-                </details>
+                </div>
             </section>
+
+            <!-- TAB 3: DEMOLITION SCOPE -->
+            <section id="view-demo" class="view-section hidden space-y-6 max-w-6xl mx-auto">
+                <div id="card-demolition" class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 printable-card relative mb-6">
+                    <button onclick="app.exportToPDF('card-demolition')" class="absolute top-4 right-4 bg-gray-100 hover:bg-gray-200 text-gray-600 px-3 py-1 rounded text-[10px] font-bold uppercase"><i class="fa fa-print mr-1"></i> PDF</button>
+                    <h2 class="text-lg font-bold text-gray-900 mb-6 flex items-center"><i class="fa-solid fa-hammer text-primary mr-2"></i> Demolition Scope</h2>
+                    
+                    <div class="overflow-x-auto rounded-lg border border-gray-200 shadow-sm">
+                        <table class="w-full text-left text-sm text-gray-600">
+                            <thead class="bg-gray-100 text-[10px] uppercase font-bold text-gray-700 tracking-wider">
+                                <tr>
+                                    <th class="px-6 py-4">Room</th>
+                                    <th class="px-6 py-4 text-center">Date Removed</th>
+                                    <th class="px-6 py-4">Material Removed</th>
+                                    <th class="px-6 py-4 text-center font-bold text-orange-600">Quantity</th>
+                                    <th class="px-6 py-4 text-center text-indigo-800">After Hrs</th>
+                                    <th class="px-6 py-4 w-1/3">Job Specific Notes</th>
+                                </tr>
+                            </thead>
+                            <tbody id="demolition-tbody" class="divide-y divide-gray-100 bg-white"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 4: EQUIPMENT & CHAMBER MITIGATION -->
+            <section id="view-equipment" class="view-section hidden space-y-6 max-w-6xl mx-auto">
+                <div id="card-equipment" class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 printable-card relative">
+                    <button onclick="app.exportToPDF('card-equipment')" class="absolute top-4 right-4 bg-gray-100 hover:bg-gray-200 text-gray-600 px-3 py-1 rounded text-[10px] font-bold uppercase"><i class="fa fa-print mr-1"></i> PDF</button>
+                    <h2 class="text-lg font-bold text-gray-900 mb-6 flex items-center"><i class="fa-solid fa-fan text-primary mr-2"></i> Chamber Setup & Measurements</h2>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mb-8" id="chamber-info-content"></div>
+
+                    <!-- IICRC Panel -->
+                    <div class="mb-6 p-4 bg-orange-50 border-l-4 border-primary rounded shadow-sm">
+                        <h4 class="font-bold text-orange-900 flex items-center mb-2 text-sm uppercase tracking-wide"><i class="fa-solid fa-calculator text-primary mr-2"></i> IICRC S500 Sizing Calculator</h4>
+                        <p class="text-xs text-orange-800 leading-relaxed font-medium">Initial dehumidifier sizing is driven by the volume of the affected area and the Class of Water. <br/>
+                        <strong>Class 1:</strong> CF / 100 &nbsp;&nbsp;|&nbsp;&nbsp; <strong>Class 2:</strong> CF / 50 &nbsp;&nbsp;|&nbsp;&nbsp; <strong>Class 3:</strong> CF / 40 &nbsp;&nbsp;|&nbsp;&nbsp; <strong>Class 4:</strong> CF / 30<br/>
+                        <em class="text-orange-900 font-bold mt-1 inline-block">Example: 1200 CF Class 2 = 1200 / 50 = 24 AHAM PPD Requirement.</em></p>
+                    </div>
+
+                    <h3 class="font-bold text-gray-800 mb-3 text-sm">Equipment Inventory Logs</h3>    
+                    <div class="overflow-x-auto rounded-lg border border-gray-200 shadow-sm">
+                        <table class="w-full text-left text-sm text-gray-600">
+                            <thead class="bg-gray-100 text-[10px] uppercase font-bold text-gray-700 tracking-wider">
+                                <tr>
+                                    <th class="px-6 py-4 text-center">Install Date</th>
+                                    <th class="px-6 py-4 text-center">Pull Date</th>
+                                    <th class="px-6 py-4 text-center">Total Days</th>
+                                    <th class="px-6 py-4">Equipment Type</th>
+                                    <th class="px-6 py-4">Room Specs</th>
+                                </tr>
+                            </thead>
+                            <tbody id="equipment-tbody" class="divide-y divide-gray-100 bg-white"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 5: OPERATIONS & TIME LOGS -->
+            <section id="view-ops" class="view-section hidden space-y-6 max-w-6xl mx-auto">
+                <div id="card-time-logs" class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 printable-card relative mb-6">
+                    <button onclick="app.exportToPDF('card-time-logs')" class="absolute top-4 right-4 bg-gray-100 hover:bg-gray-200 text-gray-600 px-3 py-1 rounded text-[10px] font-bold uppercase"><i class="fa fa-print mr-1"></i> PDF</button>
+                    <h2 class="text-lg font-bold text-gray-900 mb-6 flex items-center"><i class="fa-solid fa-clock-rotate-left text-primary mr-2"></i> Operations & Time Logs</h2>
+                    
+                    <div class="flex flex-col md:flex-row gap-4 mb-6">
+                        <div class="bg-indigo-50 border border-indigo-100 text-indigo-800 px-5 py-4 rounded-lg flex-1 shadow-inner flex items-center justify-between">
+                            <p class="text-xs font-semibold uppercase tracking-wider">Total days present on site</p>
+                            <span class="font-black text-3xl" id="metric-days">--</span>
+                        </div>
+                        <div class="bg-blue-50 border border-blue-100 text-blue-800 px-5 py-4 rounded-lg flex-1 shadow-inner flex items-center justify-between">
+                            <p class="text-xs font-semibold uppercase tracking-wider">Total days performed check & service</p>
+                            <span class="font-black text-3xl" id="metric-checks">--</span>
+                        </div>
+                    </div>
+
+                    <div class="overflow-x-auto rounded-lg border border-gray-200 shadow-sm">
+                        <table class="w-full text-left text-sm text-gray-600">
+                            <thead class="bg-gray-100 text-[10px] uppercase font-bold text-gray-700 tracking-wider">
+                                <tr>
+                                    <th class="px-6 py-4">Date</th>
+                                    <th class="px-6 py-4 border-x border-gray-200">Tech Name(s)</th>
+                                    <th class="px-6 py-4 text-indigo-700 text-center">Arrival</th>
+                                    <th class="px-6 py-4 text-indigo-700 text-center">Ending</th>
+                                    <th class="px-6 py-4 text-center">Travel (M)</th>
+                                    <th class="px-6 py-4 text-center">Demo (M)</th>
+                                    <th class="px-6 py-4 border-l border-gray-200 w-1/3">Multi-Tech Justification</th>
+                                </tr>
+                            </thead>
+                            <tbody id="time-logs-tbody" class="divide-y divide-gray-100 bg-white"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div id="card-site" class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 printable-card relative">
+                    <button onclick="app.exportToPDF('card-site')" class="absolute top-4 right-4 bg-gray-100 hover:bg-gray-200 text-gray-600 px-3 py-1 rounded text-[10px] font-bold uppercase"><i class="fa fa-print mr-1"></i> PDF</button>
+                    <h2 class="text-lg font-bold text-gray-900 mb-6 flex items-center"><i class="fa-solid fa-clipboard text-primary mr-2"></i> Generals & Site Conditions</h2>
+                    <div id="site-conditions-content" class="grid grid-cols-1 gap-8 line-clamp-none"></div>
+                </div>
+            </section>
+
         </div>
     </main>
 
     <script src="app.js"></script>
-    <script>
-        // Prevent default on details interaction to allow easy PDF clicks without toggling accordion
-        document.querySelectorAll('details summary button').forEach(b => {
-            b.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); });
-        });
-    </script>
 </body>
 </html>
