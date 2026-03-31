@@ -1,43 +1,285 @@
-/* Custom Scrollbars */
-::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
+/* ═══════════════════════════════════════════════════════ */
+/* ENTRUSTED — MITIGATION DASHBOARD STYLES               */
+/* ═══════════════════════════════════════════════════════ */
+
+/* ── Scrollbars ────────────────────────────────────── */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: #f1f5f9; }
+::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+/* ── View Transitions ─────────────────────────────── */
+.view-section { animation: fadeSlideIn 0.25s ease-out; }
+@keyframes fadeSlideIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
 }
-::-webkit-scrollbar-track {
-    background: #f1f5f9; 
+
+/* ── Cards ─────────────────────────────────────────── */
+.card {
+    background: white;
+    border-radius: 0.75rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    border: 1px solid #e2e8f0;
+    padding: 1.5rem;
 }
-::-webkit-scrollbar-thumb {
-    background: #cbd5e1; 
+.card-title {
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin-bottom: 1.25rem;
+    display: flex;
+    align-items: center;
+}
+
+/* ── Table Headers ─────────────────────────────────── */
+.thead-style {
+    background: #f8fafc;
+    font-size: 10px;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: #64748b;
+    letter-spacing: 0.08em;
+}
+
+/* ── Action Buttons (Header) ──────────────────────── */
+.action-btn {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.12);
+    color: #94a3b8;
+    padding: 0.45rem 0.75rem;
+    border-radius: 0.375rem;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    transition: all 0.15s;
+    cursor: pointer;
+}
+.action-btn:hover {
+    background: rgba(255,255,255,0.12);
+    color: #e2e8f0;
+}
+.action-btn-primary {
+    background: #f97316;
+    color: white;
+    padding: 0.45rem 1rem;
+    border-radius: 0.375rem;
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    border: 1px solid #ea580c;
+    box-shadow: 0 2px 8px rgba(249,115,22,0.25);
+    transition: all 0.15s;
+    cursor: pointer;
+}
+.action-btn-primary:hover {
+    background: #ea580c;
+    box-shadow: 0 4px 12px rgba(249,115,22,0.35);
+}
+
+/* ── Select / PDF Controls ────────────────────────── */
+.select-label {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 10px;
+    font-weight: 700;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    cursor: pointer;
+    user-select: none;
+}
+.pdf-checkbox {
+    width: 1.15rem;
+    height: 1.15rem;
+    accent-color: #f97316;
+    cursor: pointer;
+}
+.pdf-btn {
+    background: #f1f5f9;
+    color: #64748b;
+    padding: 0.25rem 0.65rem;
+    border-radius: 0.25rem;
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    border: 1px solid #e2e8f0;
+    transition: all 0.15s;
+    cursor: pointer;
+}
+.pdf-btn:hover {
+    background: #e2e8f0;
+    color: #334155;
+}
+
+/* ── Filter Inputs ─────────────────────────────────── */
+.filter-label {
+    display: block;
+    font-size: 9px;
+    font-weight: 700;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.3rem;
+}
+.filter-input {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    background: white;
+    border: 1px solid #d1d5db;
+    font-size: 0.8rem;
+    border-radius: 0.375rem;
+    outline: none;
+    transition: border-color 0.15s;
+    color: #334155;
+}
+.filter-input:focus {
+    border-color: #f97316;
+    box-shadow: 0 0 0 2px rgba(249,115,22,0.12);
+}
+
+/* ── Metric Cards ──────────────────────────────────── */
+.metric-card {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    color: #334155;
+    padding: 1rem 1.25rem;
+    border-radius: 0.5rem;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* ── After Hours Badge ─────────────────────────────── */
+.badge-after-hrs {
+    background: #1e1b4b;
+    color: white;
+    font-size: 9px;
+    padding: 2px 8px;
     border-radius: 4px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    box-shadow: 0 1px 3px rgba(30,27,75,0.4);
+    margin-top: 4px;
 }
-::-webkit-scrollbar-thumb:hover {
-    background: #94a3b8; 
+.badge-after-hrs i { color: #a5b4fc; }
+
+/* ── Room Header Row (Demo table) ──────────────────── */
+.room-header-row {
+    background: #e2e8f0;
+    border-top: 2px solid #cbd5e1;
+    border-bottom: 1px solid #cbd5e1;
+}
+.room-header-row td {
+    padding: 0.65rem 1.25rem;
+    font-weight: 900;
+    color: #0f172a;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    font-size: 12px;
 }
 
-/* Animations */
-.view-section {
-    animation: fadeIn 0.3s ease-in-out;
+/* ── IICRC AHAM Block ──────────────────────────────── */
+.iicrc-block {
+    background: #f0f9ff;
+    border: 1px solid #bae6fd;
+    border-radius: 0.5rem;
+    padding: 0.75rem 1rem;
+    margin-top: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+.iicrc-block .label {
+    font-size: 10px;
+    font-weight: 700;
+    color: #0369a1;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+.iicrc-block .value {
+    font-size: 14px;
+    font-weight: 900;
+    color: #0c4a6e;
+}
+.iicrc-block .divider {
+    width: 1px;
+    height: 24px;
+    background: #bae6fd;
+}
+.iicrc-pass {
+    color: #15803d;
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    padding: 2px 10px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+.iicrc-fail {
+    color: #b91c1c;
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    padding: 2px 10px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
 }
 
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(5px); }
-    to { opacity: 1; transform: translateY(0); }
+/* ── Photo Card ────────────────────────────────────── */
+.photo-card {
+    border: 1px solid #e2e8f0;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    background: white;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    transition: transform 0.15s, box-shadow 0.15s;
 }
+.photo-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+.photo-card img {
+    width: 100%;
+    height: 160px;
+    object-fit: cover;
+    opacity: 0.92;
+    transition: opacity 0.15s;
+}
+.photo-card:hover img { opacity: 1; }
 
-/* Print/PDF specific fixes to prevent cutoff in html2canvas */
-.printable-card {
-    background-color: #ffffff !important;
-}
+/* ── Print / PDF Safe ──────────────────────────────── */
+.pdf-exporting .printable-card { background-color: #ffffff !important; }
+.pdf-exporting #card-job-info { color: #0f172a !important; background-color: #f8fafc !important; padding: 1rem; border-radius: 8px; border: 1px solid #e2e8f0; }
+.pdf-exporting #card-job-info .text-gray-300 { color: #475569 !important; border-color: #cbd5e1 !important; }
+.pdf-exporting #card-job-info .text-gray-400 { color: #64748b !important; }
+.pdf-exporting #card-job-info .text-gray-200 { color: #0f172a !important; }
+.pdf-exporting #card-job-info .bg-white\/10 { background-color: #f1f5f9 !important; }
 
-/* Ensure details open and summary removes default markers nicely */
-details > summary {
-    list-style: none;
-}
-details > summary::-webkit-details-marker {
-    display: none;
-}
+/* ── Sidebar Nav Active State ──────────────────────── */
+.nav-btn.active i { opacity: 1; color: #f97316 !important; }
 
-/* Canvas styling */
-canvas {
-    touch-action: none;
+/* ── Floating FAB pulse ────────────────────────────── */
+#custom-pdf-fab {
+    animation: fabPulse 3s ease-in-out infinite;
+}
+@keyframes fabPulse {
+    0%, 100% { box-shadow: 0 4px 14px rgba(249,115,22,0.3); }
+    50%      { box-shadow: 0 4px 24px rgba(249,115,22,0.5); }
 }
