@@ -1,505 +1,767 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Entrusted - Mitigation Job Dashboard</title>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <!-- jsPDF & html2canvas -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: '#f97316',
-                        primaryDark: '#ea580c',
-                        shell: '#1a1a2e',
-                        sidebar: '#0f0f1e',
-                        headerBg: '#16213e',
-                    },
-                    fontFamily: { sans: ['Inter', 'sans-serif'] }
-                }
-            }
-        }
-    </script>
-    <style>
-        /* ── Core Aesthetics ───────────────────────── */
-        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #1e293b; }
-        ::-webkit-scrollbar { width: 8px; height: 8px; }
-        ::-webkit-scrollbar-track { background: #f1f5f9; }
-        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
-        
-        .nav-btn { display: flex; align-items: center; width: 100%; text-align: left; padding: 0.75rem 1rem; border-radius: 0.75rem; font-weight: 600; font-size: 0.875rem; transition: all 0.2s; color: #64748b; }
-        .nav-btn:hover { color: #f8fafc; background-color: rgba(255, 255, 255, 0.05); }
-        .nav-btn.active { background-color: rgba(255, 255, 255, 0.1); color: #ffffff; }
-        .nav-btn.active i { color: #f97316 !important; opacity: 1; }
-        
-        /* Action buttons all identical charcoal styling per spec */
-        .action-btn { background-color: #1e293b; color: #e2e8f0; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; padding: 0.5rem 1rem; border-radius: 0.5rem; border: 1px solid #334155; transition: all 0.2s; display: flex; align-items: center; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
-        .action-btn:hover { background-color: #334155; color: #ffffff; border-color: #475569; }
-        
-        .card-title { font-size: 1.125rem; font-weight: 900; color: #0f172a; margin-bottom: 1.25rem; letter-spacing: -0.01em; display: flex; align-items: center; }
-        .printable-card { background-color: #ffffff; border-radius: 1rem; padding: 1.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.05), 0 10px 15px -5px rgba(0,0,0,0.02); border: 1px solid #e2e8f0; margin-bottom: 1.5rem; position: relative; }
-        
-        .thead-style { background-color: #f8fafc; text-transform: uppercase; font-size: 0.65rem; font-weight: 800; color: #64748b; letter-spacing: 0.05em; border-bottom: 1px solid #e2e8f0; }
-        .table-row-hover:hover { background-color: #f8fafc; transition: background-color 0.15s ease-in-out; }
-        
-        .pdf-checkbox { accent-color: #f97316; width: 1.1rem; height: 1.1rem; cursor: pointer; flex-shrink: 0; }
-        
-        .photo-card img { height: 160px; object-fit: cover; width: 100%; border-bottom: 1px solid #e2e8f0; }
-        
-        /* ── PDF Export Overrides ───────────────────────── */
-        body.pdf-exporting * {
-            -webkit-print-color-adjust: exact !important;
-            print-color-adjust: exact !important;
-        }
-        body.pdf-exporting .pdf-checkbox,
-        body.pdf-exporting .pdf-controls,
-        body.pdf-exporting label { display: none !important; }
-        body.pdf-exporting #card-job-info { color: #000 !important; background-color: white !important; margin-bottom: 20px;}
-        body.pdf-exporting #card-job-info h1, 
-        body.pdf-exporting #card-job-info span, 
-        body.pdf-exporting #card-job-info i { color: #000 !important; border:none!important; }
-        body.pdf-exporting #card-job-info .bg-primary\\/95 { background-color: #f97316 !important; color: white !important; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Entrusted - Mitigation Job Dashboard</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        primary: '#f87b4d',
+        primaryDark: '#e5693d',
+        shell: '#1e1e2e',
+        sidebar: '#161625',
+        headerBg: '#1a1a2e',
+        entGray: '#a4a4a5',
+      },
+      fontFamily: { sans: ['Inter','sans-serif'] }
+    }
+  }
+}
+</script>
+<style>
+body{font-family:'Inter',sans-serif;background:#f1f5f9;color:#1e293b}
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:#1e1e2e}
+::-webkit-scrollbar-thumb{background:#334155;border-radius:4px}
+::-webkit-scrollbar-thumb:hover{background:#475569}
+.nav-btn{display:flex;align-items:center;width:100%;text-align:left;padding:.7rem 1rem;border-radius:.6rem;font-weight:600;font-size:.82rem;transition:all .2s;color:#64748b;gap:.6rem}
+.nav-btn:hover{color:#f8fafc;background:rgba(255,255,255,.05)}
+.nav-btn.active{background:rgba(248,123,77,.12);color:#fff;border-left:3px solid #f87b4d}
+.nav-btn.active i.nav-icon{color:#f87b4d!important;opacity:1}
+.view-section{animation:fadeIn .25s ease-out}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.card{background:#fff;border-radius:.75rem;box-shadow:0 1px 3px rgba(0,0,0,.05);border:1px solid #e2e8f0;padding:1.5rem;position:relative;margin-bottom:1.25rem}
+.card-title{font-size:1rem;font-weight:900;color:#0f172a;margin-bottom:1rem;display:flex;align-items:center;letter-spacing:-.01em}
+.thead-s{background:#f8fafc;text-transform:uppercase;font-size:.6rem;font-weight:800;color:#64748b;letter-spacing:.06em}
+.thead-s th{padding:.7rem 1rem;white-space:nowrap}
+.trow:hover{background:#f8fafc}
+.trow td{padding:.65rem 1rem;font-size:.8rem}
+.pdf-cb{accent-color:#f87b4d;width:1rem;height:1rem;cursor:pointer;flex-shrink:0}
+.photo-card{border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;background:#fff;transition:transform .15s,box-shadow .15s}
+.photo-card:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(0,0,0,.08)}
+.photo-card img{width:100%;height:150px;object-fit:cover}
+.badge-ah{background:#fef3c7;color:#92400e;border:1px solid #fcd34d;font-size:.55rem;font-weight:800;padding:2px 6px;border-radius:4px;text-transform:uppercase;letter-spacing:.06em;display:inline-flex;align-items:center;gap:3px}
+.collapse-hdr{cursor:pointer;user-select:none}
+.collapse-hdr:hover{filter:brightness(1.05)}
+.collapse-icon{transition:transform .2s}
+.collapsed .collapse-icon{transform:rotate(-90deg)}
+.collapsed .collapse-body{display:none}
+.action-btn{background:#1e293b;color:#e2e8f0;font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:.65rem 1rem;border-radius:.5rem;border:1px solid #334155;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:.4rem;box-shadow:0 1px 2px rgba(0,0,0,.1);width:100%}
+.action-btn:hover{background:#334155;color:#fff}
+.link-chamber{color:#f87b4d;text-decoration:underline;text-underline-offset:3px;cursor:pointer;font-weight:700}
+.link-chamber:hover{color:#fff}
+#fab-pdf{animation:pulse 3s ease-in-out infinite}
+@keyframes pulse{0%,100%{box-shadow:0 4px 14px rgba(248,123,77,.3)}50%{box-shadow:0 4px 24px rgba(248,123,77,.55)}}
+.select-right{position:absolute;top:.75rem;right:.75rem;display:flex;align-items:center;gap:.35rem}
+.select-right span{font-size:.55rem;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.06em}
+.blue-col{background:rgba(219,234,254,.35);color:#1e40af;font-weight:900}
+.neg-row{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;background:#fff;margin-bottom:.5rem}
+</style>
 </head>
-<body class="flex overflow-hidden h-screen text-slate-800">
+<body class="flex overflow-hidden h-screen">
 
-    <!-- SIDEBAR -->
-    <aside class="w-[280px] bg-sidebar text-slate-300 flex flex-col shrink-0 z-20 shadow-2xl">
-        <div class="h-auto py-6 flex flex-col items-center justify-center bg-black/40 shadow shrink-0 border-b border-slate-800/60">
-            <div class="w-12 h-12 rounded-xl bg-primary flex items-center justify-center font-black text-white text-2xl shadow-lg shadow-primary/30 mb-3">E</div>
-            <h1 class="text-xl font-black tracking-[0.25em] text-white uppercase">Entrusted</h1>
-            <p class="text-[10px] text-slate-400 tracking-[0.3em] uppercase font-bold mt-1.5">Mitigation App</p>
+<!-- ═══ SIDEBAR ═══ -->
+<aside class="w-[260px] bg-sidebar text-slate-300 flex flex-col shrink-0 z-20 shadow-2xl border-r border-slate-800/50">
+  <div class="py-5 flex flex-col items-center bg-black/40 border-b border-slate-800/60 shrink-0">
+    <div class="w-11 h-11 rounded-xl bg-primary flex items-center justify-center font-black text-white text-xl shadow-lg shadow-primary/30 mb-2">E</div>
+    <h1 class="text-lg font-black tracking-[.25em] text-white uppercase">Entrusted</h1>
+    <p class="text-[9px] text-slate-500 tracking-[.3em] uppercase font-bold mt-1">Mitigation App</p>
+  </div>
+  <nav class="flex-1 py-5 space-y-1 px-3 overflow-y-auto">
+    <p class="text-[9px] text-slate-600 font-bold uppercase tracking-[.2em] mb-3 px-3">Job Views</p>
+    <button data-target="view-1" onclick="app.switchView('view-1')" class="nav-btn active"><i class="fa-solid fa-house-crack nav-icon w-5 text-center text-primary/60"></i>1. Scope, Moisture & Demo</button>
+    <button data-target="view-2" onclick="app.switchView('view-2')" class="nav-btn"><i class="fa-solid fa-gears nav-icon w-5 text-center text-primary/60"></i>2. Equipment & Atmos</button>
+    <button data-target="view-3" onclick="app.switchView('view-3')" class="nav-btn"><i class="fa-solid fa-clipboard-list nav-icon w-5 text-center text-primary/60"></i>3. Operations & Notes</button>
+    <button data-target="view-4" onclick="app.switchView('view-4')" class="nav-btn"><i class="fa-solid fa-camera nav-icon w-5 text-center text-primary/60"></i>4. Photo Gallery</button>
+    <button data-target="view-5" onclick="app.switchView('view-5')" class="nav-btn"><i class="fa-regular fa-folder-open nav-icon w-5 text-center text-primary/60"></i>5. Documents & Reporting</button>
+    <button data-target="view-6" onclick="app.switchView('view-6')" class="nav-btn"><i class="fa-solid fa-calculator nav-icon w-5 text-center text-primary/60"></i>6. Negotiations Calc</button>
+  </nav>
+  <div class="px-5 py-4 border-t border-slate-800/60 bg-black/30 shrink-0">
+    <p class="text-[8px] text-slate-600 uppercase tracking-[.2em] font-bold mb-1">Active Job</p>
+    <h2 class="font-bold text-sm text-slate-200 truncate" id="sb-name">--</h2>
+    <p class="text-xs text-primary font-mono mt-0.5 font-semibold" id="sb-job">--</p>
+  </div>
+</aside>
+
+<!-- ═══ MAIN ═══ -->
+<main class="flex-1 flex flex-col h-full overflow-hidden bg-slate-100">
+
+<!-- GLOBAL HEADER -->
+<header id="global-header" class="bg-headerBg border-b border-slate-700/50 px-6 py-4 shrink-0 shadow-xl z-10"></header>
+
+<!-- VIEWS CONTAINER -->
+<div class="flex-1 overflow-y-auto p-5 lg:p-7" id="views-wrap">
+
+  <!-- TAB 1 -->
+  <section id="view-1" class="max-w-[1400px] mx-auto view-section"></section>
+
+  <!-- TAB 2 -->
+  <section id="view-2" class="max-w-[1400px] mx-auto view-section hidden"></section>
+
+  <!-- TAB 3 -->
+  <section id="view-3" class="max-w-[1400px] mx-auto view-section hidden"></section>
+
+  <!-- TAB 4: Photos -->
+  <section id="view-4" class="max-w-[1400px] mx-auto view-section hidden"></section>
+
+  <!-- TAB 5: Documents -->
+  <section id="view-5" class="max-w-[1400px] mx-auto view-section hidden"></section>
+
+  <!-- TAB 6: Negotiations -->
+  <section id="view-6" class="max-w-[900px] mx-auto view-section hidden pb-20"></section>
+
+</div>
+
+<!-- FAB -->
+<button id="fab-pdf" onclick="app.generateCustomPDF()" class="fixed bottom-7 right-7 bg-primary hover:bg-primaryDark text-white px-5 py-3.5 rounded-full text-xs font-black uppercase tracking-widest shadow-2xl shadow-primary/40 transition-all hover:scale-105 z-50 flex items-center gap-2">
+  <i class="fa-solid fa-file-export text-base"></i> Generate Custom PDF
+</button>
+
+</main>
+
+<script>
+/* ═══════════════════════════════════════════════════════ */
+/* MOCK DATA                                              */
+/* ═══════════════════════════════════════════════════════ */
+const DATA = {
+  job: {
+    id: "MIT-2026-04182",
+    claim: "FL26-0100718",
+    client: "Alfredo Carrero",
+    address: "1505 Arezzo Cir, Tampa, FL 33611",
+    carrier: "State Farm",
+    dol: "04/17/2026",
+    mitLead: "Julian Sanmiguel",
+    dryout: "5 Days",
+    invoice: 4520.00,
+    causeOfLoss: "Sewage Backup",
+    originRoom: "Master Bathroom",
+    startDate: "2026-04-18"
+  },
+  loss: {
+    category: "Category 3 — Black Water",
+    nature: "Primary supply line massive failure leading to standing sewage throughout origin room and migration to adjacent kitchen.",
+    affected: "Master Bathroom, Kitchen",
+    status: "Fixed by licensed plumber on-site Day 1",
+    demoNeeded: "Yes — all porous below 2 ft flood line",
+    moldTest: "Yes — pre/post clearance required",
+    instructions: "Treat as CAT 3. Remove all porous materials to 2 FT above affected water margin. Extract. Neutralize. Dehumidify per IICRC S500 protocol."
+  },
+  extenuating: [
+    { date: "April 18 (Day 1)", text: "Plumber cap-off delayed by 24 hours. Drying prolonged in Kitchen due to continued slow seepage until plumber arrived.", tech: "John Velez" },
+    { date: "April 19 (Day 2)", text: "Homeowner elderly (78 yrs), residing on-site — extra containment barriers with clean zippers erected to isolate living areas from demo zone.", tech: "Julian Sanmiguel" }
+  ],
+  rooms: [
+    { name: "Kitchen", chamber: "Chamber 1", l: 14, w: 9, h: 10, vol: 1260,
+      moisture: [
+        { mat: "Drywall (Base)", std: "≤10%", d1: "95%", d2: "45%", d3: "18%", d4: "12%", d5: "8%", notes: "Flood cut at 24 in. Readings taken at sill plate level. — Tech: John Velez" },
+        { mat: "Sill Plate (Wood)", std: "≤12%", d1: "65%", d2: "38%", d3: "22%", d4: "14%", d5: "10%", notes: "Slow dry due to plumber delay. Extra day needed. — Tech: John Velez" },
+        { mat: "Subfloor (OSB)", std: "≤12%", d1: "72%", d2: "40%", d3: "20%", d4: "13%", d5: "9%", notes: "Mat system deployed Day 2. — Tech: Luis M" }
+      ],
+      demo: [
+        { date: "April 18 (Day 1)", mat: "Laminate Flooring", qty: "140 SQFT", afterHrs: true, notes: "Emergency removal — flooring saturated and delaminating. — Tech: John Velez", link: "#" },
+        { date: "April 18 (Day 1)", mat: "Lower Cabinetry (Base)", qty: "13 LF", afterHrs: true, notes: "Base cabinets detached to access plumbing chase. — Tech: John Velez", link: "#" },
+        { date: "April 19 (Day 2)", mat: "Baseboards", qty: "45 LF", afterHrs: false, notes: "Pried cleanly along perimeter to expose wall cavity. — Tech: Luis M", link: "#" }
+      ]
+    },
+    { name: "Master Bathroom", chamber: "Chamber 2", l: 12, w: 10, h: 10, vol: 1200,
+      moisture: [
+        { mat: "Drywall (Base)", std: "≤10%", d1: "99%", d2: "60%", d3: "30%", d4: "14%", d5: "9%", notes: "CAT 3 flood cut completed Day 1. — Tech: Mike Torres" },
+        { mat: "Tile Backer Board", std: "≤10%", d1: "55%", d2: "30%", d3: "15%", d4: "10%", d5: "7%", notes: "Injectidry deployed behind tile wall. — Tech: Mike Torres" }
+      ],
+      demo: [
+        { date: "April 18 (Day 1)", mat: "Drywall (2ft flood cut)", qty: "120 SQFT", afterHrs: false, notes: "CAT 3 protocol — standard flood cut. Bagged and sealed. — Tech: Mike Torres", link: "#" },
+        { date: "April 19 (Day 2)", mat: "Vanity Base Cabinet", qty: "1 EA", afterHrs: false, notes: "MDF absorbed water. Unsalvageable. Detached to expose plumbing. — Tech: Mike Torres", link: "#" },
+        { date: "April 19 (Day 2)", mat: "Vinyl Floor Tile", qty: "80 SQFT", afterHrs: false, notes: "Removed to access subfloor for targeted drying. — Tech: Luis M", link: "#" }
+      ]
+    },
+    { name: "Hallway", chamber: "Chamber 1", l: 10, w: 4, h: 10, vol: 400,
+      moisture: [
+        { mat: "Baseboard (MDF)", std: "≤10%", d1: "40%", d2: "22%", d3: "12%", d4: "8%", d5: "6%", notes: "Migration from kitchen. Minor. — Tech: John Velez" }
+      ],
+      demo: [
+        { date: "April 19 (Day 2)", mat: "Baseboards", qty: "20 LF", afterHrs: false, notes: "Removed along kitchen-adjacent wall only. — Tech: Luis M", link: "#" }
+      ]
+    }
+  ],
+  chambers: [
+    { id: "Chamber 1", rooms: ["Kitchen","Hallway"], aham: true,
+      l: 24, w: 13, h: 10, vol: 3120,
+      waterClass: "Class 2", classDesc: "Significant amount of water — affects entire room. Water has wicked up walls less than 24 inches. Carpet/cushion are wet.",
+      equipment: [
+        { model: "Phoenix DryMAX XL (LGR Dehumidifier)", ins: "April 18 (Day 1)", pull: "April 22 (Day 5)", days: 4, notes: "Primary drying unit — center-chamber near ingress point." },
+        { model: "Drieaz Velo Pro Air Mover", ins: "April 18 (Day 1)", pull: "April 22 (Day 5)", days: 4, notes: "Directed at wall cavity behind cabinetry." },
+        { model: "Drieaz Velo Pro Air Mover", ins: "April 18 (Day 1)", pull: "April 22 (Day 5)", days: 4, notes: "Pushing air across exposed subfloor." },
+        { model: "Drieaz Velo Pro Air Mover", ins: "April 19 (Day 2)", pull: "April 22 (Day 5)", days: 3, notes: "Added Day 2 for hallway wall drying." },
+        { model: "HEPA 500 Air Scrubber", ins: "April 18 (Day 1)", pull: "April 22 (Day 5)", days: 4, notes: "Negative air / containment pressure — CAT 3 required." }
+      ],
+      atmos: [
+        { date: "April 18 (Day 1)", out: "85°F / 60%", un: "74°F / 50%", ch: "82°F / 78%", de: "105°F / 22%", notes: "Initial setup. High humidity at source.", tech: "John Velez" },
+        { date: "April 19 (Day 2)", out: "88°F / 65%", un: "75°F / 52%", ch: "78°F / 55%", de: "110°F / 16%", notes: "Repositioned for subfloor. Drying normally.", tech: "Mike Torres" },
+        { date: "April 20 (Day 3)", out: "82°F / 58%", un: "73°F / 48%", ch: "76°F / 40%", de: "112°F / 12%", notes: "Chamber stabilized. Demo waste removed.", tech: "John Velez" },
+        { date: "April 21 (Day 4)", out: "79°F / 55%", un: "72°F / 46%", ch: "75°F / 32%", de: "108°F / 10%", notes: "Near dry standard on most materials.", tech: "Julian Sanmiguel" },
+        { date: "April 22 (Day 5)", out: "80°F / 52%", un: "72°F / 45%", ch: "74°F / 28%", de: "100°F / 9%", notes: "At/below standard. Equipment pulled.", tech: "John Velez" }
+      ]
+    },
+    { id: "Chamber 2", rooms: ["Master Bathroom"], aham: true,
+      l: 12, w: 10, h: 10, vol: 1200,
+      waterClass: "Class 3", classDesc: "Greatest amount of water — water from overhead, affecting ceiling, walls, insulation, carpet, cushion, and subfloor.",
+      equipment: [
+        { model: "Phoenix DryMAX Blue (LGR Dehumidifier)", ins: "April 18 (Day 1)", pull: "April 22 (Day 5)", days: 4, notes: "Running continuously — CAT 3 environment." },
+        { model: "Injectidry HP Wall System", ins: "April 19 (Day 2)", pull: "April 22 (Day 5)", days: 3, notes: "Wall cavity drying behind tile — avoiding additional demo." },
+        { model: "Drieaz Velo Pro Air Mover", ins: "April 18 (Day 1)", pull: "April 22 (Day 5)", days: 4, notes: "Floor-level airflow across subfloor." },
+        { model: "HEPA 500 Air Scrubber", ins: "April 18 (Day 1)", pull: "April 22 (Day 5)", days: 4, notes: "CAT 3 air filtration — negative pressure maintained." }
+      ],
+      atmos: [
+        { date: "April 18 (Day 1)", out: "85°F / 60%", un: "74°F / 50%", ch: "80°F / 75%", de: "102°F / 25%", notes: "Initial setup. CAT 3 containment active.", tech: "John Velez" },
+        { date: "April 19 (Day 2)", out: "88°F / 65%", un: "75°F / 52%", ch: "76°F / 52%", de: "108°F / 18%", notes: "Injectidry installed. Drying well.", tech: "Mike Torres" },
+        { date: "April 20 (Day 3)", out: "82°F / 58%", un: "73°F / 48%", ch: "74°F / 38%", de: "110°F / 14%", notes: "Chamber stabilized. Readings trending down.", tech: "John Velez" },
+        { date: "April 21 (Day 4)", out: "79°F / 55%", un: "72°F / 46%", ch: "73°F / 30%", de: "106°F / 11%", notes: "Near target. One more day.", tech: "Julian Sanmiguel" },
+        { date: "April 22 (Day 5)", out: "80°F / 52%", un: "72°F / 45%", ch: "73°F / 26%", de: "98°F / 8%", notes: "All at/below standard. Equipment pulled.", tech: "John Velez" }
+      ]
+    }
+  ],
+  timeLogs: [
+    { date: "April 18 (Day 1)", techs: "John Velez, Luis M", arr: "5:30 PM", end: "11:45 PM", tra: 45, dem: 240, aft: true, just: "CAT 3 emergency demo required 2 techs for safe tear-out, heavy content manipulation, and upper cabinet removal." },
+    { date: "April 19 (Day 2)", techs: "Mike Torres", arr: "9:00 AM", end: "12:30 PM", tra: 30, dem: 90, aft: false, just: "Solo tech — bathroom vanity removal and vinyl tear-out." },
+    { date: "April 19 (Day 2)", techs: "John Velez, Luis M", arr: "1:00 PM", end: "4:30 PM", tra: 45, dem: 60, aft: false, just: "2 techs for kitchen baseboard removal and hallway work." },
+    { date: "April 20 (Day 3)", techs: "John Velez", arr: "9:00 AM", end: "10:30 AM", tra: 45, dem: 0, aft: false, just: "—" },
+    { date: "April 21 (Day 4)", techs: "Julian Sanmiguel", arr: "2:00 PM", end: "3:15 PM", tra: 30, dem: 0, aft: false, just: "—" },
+    { date: "April 22 (Day 5)", techs: "John Velez, Mike Torres", arr: "10:00 AM", end: "12:30 PM", tra: 45, dem: 0, aft: false, just: "2 techs for equipment pull and final readings across all chambers." }
+  ],
+  ppe: [
+    { item: "N-95 Respirators", qty: "8 units", link: "#" },
+    { item: "Tyvek Suits (Full)", qty: "6 suits", link: "#" },
+    { item: "Nitrile Gloves (Heavy Duty)", qty: "3 boxes", link: "#" },
+    { item: "Heavy Duty Contractor Bags", qty: "50 ct", link: "#" },
+    { item: "Poly Sheeting (6 mil)", qty: "300 SQFT", link: "#" },
+    { item: "Antimicrobial Spray (BioZap)", qty: "2 gallons", link: "#" }
+  ],
+  narratives: [
+    { id:"n1", date:"April 18 (Day 1)", room:"Kitchen", notes:"Extracted standing water from flooring. Plumber on-site confirmed ruptured supply line under sink — repaired. Commenced emergency tear-out of lower cabinetry and laminate flooring. Set containment, negative air pressure, and placed drying equipment.", tech:"John Velez" },
+    { id:"n2", date:"April 18 (Day 1)", room:"Master Bathroom", notes:"Category 3 extraction complete. Applied antimicrobial treatment to all exposed surfaces. Set HEPA scrubbers for negative pressure. Flood cut drywall to 24 inches above visible water line per S500.", tech:"Mike Torres" },
+    { id:"n3", date:"April 18 (Day 1)", room:"Hallway", notes:"Minor moisture migration detected at kitchen-adjacent wall. Baseboards flagged for removal Day 2. Air mover positioned.", tech:"John Velez" },
+    { id:"n4", date:"April 19 (Day 2)", room:"Kitchen", notes:"Drying progressing. Removed baseboards on affected walls to relieve vapor pressure. Mat system deployed on subfloor. Readings dropping per trajectory.", tech:"John Velez" },
+    { id:"n5", date:"April 19 (Day 2)", room:"Master Bathroom", notes:"Vanity base removed — MDF unsalvageable. Vinyl floor tile pulled to access subfloor. Injectidry system installed behind tile wall to dry wall cavity without additional demo.", tech:"Mike Torres" },
+    { id:"n6", date:"April 19 (Day 2)", room:"Hallway", notes:"Baseboards removed along kitchen-adjacent wall. Air mover repositioned. Readings already trending down.", tech:"Luis M" },
+    { id:"n7", date:"April 20 (Day 3)", room:"All Rooms", notes:"Monitoring visit. All chambers performing within expected trajectory. Kitchen sill plate still elevated at 22% — continued drying per protocol.", tech:"John Velez" },
+    { id:"n8", date:"April 21 (Day 4)", room:"All Rooms", notes:"Readings approaching dry standard across all materials. Kitchen sill plate at 14% (target ≤12%). One additional day required per IICRC S500.", tech:"Julian Sanmiguel" },
+    { id:"n9", date:"April 22 (Day 5)", room:"All Rooms", notes:"Final moisture readings confirmed at or below dry standard in all rooms. All equipment pulled. Certificate of Satisfaction signed by homeowner. Job complete.", tech:"John Velez" }
+  ],
+  photos: [
+    { id:"p1", room:"Kitchen", date:"April 18 (Day 1)", phase:"Install", url:"https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=400&h=300&fit=crop" },
+    { id:"p2", room:"Kitchen", date:"April 18 (Day 1)", phase:"Demolition", url:"https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=400&h=300&fit=crop" },
+    { id:"p3", room:"Master Bathroom", date:"April 18 (Day 1)", phase:"Install", url:"https://images.unsplash.com/photo-1585128903994-9788298932a4?w=400&h=300&fit=crop" },
+    { id:"p4", room:"Master Bathroom", date:"April 18 (Day 1)", phase:"Demolition", url:"https://images.unsplash.com/photo-1607472586893-edb57bdc0e39?w=400&h=300&fit=crop" },
+    { id:"p5", room:"Kitchen", date:"April 19 (Day 2)", phase:"Monitoring", url:"https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=400&h=300&fit=crop" },
+    { id:"p6", room:"Master Bathroom", date:"April 19 (Day 2)", phase:"Monitoring", url:"https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=400&h=300&fit=crop" },
+    { id:"p7", room:"Hallway", date:"April 19 (Day 2)", phase:"Demolition", url:"https://images.unsplash.com/photo-1621905252507-b35492cc74b4?w=400&h=300&fit=crop" },
+    { id:"p8", room:"Kitchen", date:"April 22 (Day 5)", phase:"Pull", url:"https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&h=300&fit=crop" },
+    { id:"p9", room:"Master Bathroom", date:"April 22 (Day 5)", phase:"Pull", url:"https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?w=400&h=300&fit=crop" },
+    { id:"p10", room:"Hallway", date:"April 22 (Day 5)", phase:"Pull", url:"https://images.unsplash.com/photo-1513694203232-719a280e022f?w=400&h=300&fit=crop" }
+  ],
+  docs: [
+    { id:"d1", name:"W-9", date:"04/18/2026" },
+    { id:"d2", name:"Plumbing Report", date:"04/18/2026" },
+    { id:"d3", name:"Certificate of Satisfaction (COS)", date:"04/22/2026" },
+    { id:"d4", name:"Direction to Pay (Signed)", date:"04/18/2026" }
+  ],
+  negotiation: {
+    lines: [
+      { desc: "Water Extraction — Category 3", orig: 875.00, deduct: 0 },
+      { desc: "Antimicrobial Application (2 coats)", orig: 420.00, deduct: 0 },
+      { desc: "Demolition Labor — Kitchen", orig: 680.00, deduct: 0 },
+      { desc: "Demolition Labor — Master Bath", orig: 545.00, deduct: 0 },
+      { desc: "Equipment Rental — LGR Dehumidifiers (x2)", orig: 520.00, deduct: 0 },
+      { desc: "Equipment Rental — Air Movers (x4)", orig: 360.00, deduct: 0 },
+      { desc: "Equipment Rental — HEPA Scrubbers (x2)", orig: 280.00, deduct: 0 },
+      { desc: "Equipment Rental — Injectidry System", orig: 190.00, deduct: 0 },
+      { desc: "Containment Setup — Poly & Zippers", orig: 210.00, deduct: 0 },
+      { desc: "After-Hours Emergency Callout (Day 1)", orig: 240.00, deduct: 0 },
+      { desc: "Travel Time (5 trips × 45 min)", orig: 200.00, deduct: 0 }
+    ]
+  }
+};
+
+/* ═══════════════════════════════════════════════════════ */
+/* APP CONTROLLER                                         */
+/* ═══════════════════════════════════════════════════════ */
+const app = {
+  init() {
+    this.renderGlobalHeader();
+    this.renderTab1();
+    this.renderTab2();
+    this.renderTab3();
+    this.renderTab4Photos();
+    this.renderTab5Docs();
+    this.renderTab6Calc();
+    document.getElementById('sb-name').textContent = DATA.job.client;
+    document.getElementById('sb-job').textContent = DATA.job.id;
+  },
+
+  /* ── Navigation ─────────────────── */
+  switchView(id, scrollTo) {
+    document.querySelectorAll('.view-section').forEach(s => { s.classList.add('hidden'); s.classList.remove('block'); });
+    const t = document.getElementById(id);
+    if (t) { t.classList.remove('hidden'); t.classList.add('block'); }
+    document.querySelectorAll('.nav-btn').forEach(b => { b.classList.remove('active'); });
+    const btn = document.querySelector(`.nav-btn[data-target="${id}"]`);
+    if (btn) btn.classList.add('active');
+    document.getElementById('views-wrap').scrollTop = 0;
+    if (scrollTo) {
+      setTimeout(() => {
+        const el = document.getElementById(scrollTo);
+        if (el) { el.scrollIntoView({behavior:'smooth',block:'center'}); el.classList.add('ring-4','ring-primary','ring-opacity-60'); setTimeout(()=>el.classList.remove('ring-4','ring-primary','ring-opacity-60'),2500); }
+      }, 150);
+    }
+  },
+
+  /* ── Collapse toggle ────────────── */
+  toggle(el) {
+    const wrap = el.closest('.collapsible');
+    if (!wrap) return;
+    wrap.classList.toggle('collapsed');
+  },
+
+  /* ── Select all in container ────── */
+  selAll(containerId, checked) {
+    const c = document.getElementById(containerId);
+    if (c) c.querySelectorAll('.pdf-cb').forEach(cb => cb.checked = checked);
+  },
+
+  /* ── GLOBAL HEADER ─────────────── */
+  renderGlobalHeader() {
+    const j = DATA.job;
+    document.getElementById('global-header').innerHTML = `
+    <div class="flex flex-wrap items-center gap-x-4 gap-y-2 mb-2">
+      <h1 class="text-2xl font-black text-white tracking-tight flex items-center gap-2.5"><i class="fa-solid fa-building-circle-check text-primary/80"></i>${j.client}</h1>
+      <span class="bg-primary/90 text-white text-[10px] px-2.5 py-1 rounded font-mono font-bold tracking-wider shadow-sm">JOB: ${j.id}</span>
+      <span class="bg-white/10 text-slate-300 text-[10px] px-2.5 py-1 rounded font-mono font-bold tracking-wider border border-white/10">CLAIM: ${j.claim}</span>
+      <span class="bg-white/10 text-slate-300 text-[10px] px-2.5 py-1 rounded font-mono font-bold tracking-wider border border-white/10">MIT LEAD: <strong class="text-white">${j.mitLead}</strong></span>
+    </div>
+    <div class="flex flex-wrap items-center gap-x-5 gap-y-1.5 text-[12px] text-slate-400 pb-2 border-b border-slate-700/30">
+      <span class="flex items-center gap-1.5"><i class="fa-solid fa-location-dot text-primary/70"></i>${j.address}</span>
+    </div>
+    <div class="flex flex-wrap items-center gap-3 mt-2.5 text-[11px]">
+      <span class="bg-slate-800/60 px-2.5 py-1.5 rounded text-slate-300 border border-slate-700/50"><span class="text-[9px] uppercase font-bold tracking-widest text-slate-500 mr-1.5">Cause of Loss:</span><strong class="text-slate-100">${j.causeOfLoss}</strong></span>
+      <span class="bg-slate-800/60 px-2.5 py-1.5 rounded text-slate-300 border border-slate-700/50"><span class="text-[9px] uppercase font-bold tracking-widest text-slate-500 mr-1.5">Origin Room:</span><strong class="text-slate-100">${j.originRoom}</strong></span>
+      <span class="bg-slate-800/60 px-2.5 py-1.5 rounded text-slate-300 border border-slate-700/50"><span class="text-[9px] uppercase font-bold tracking-widest text-slate-500 mr-1.5">Dryout:</span><strong class="text-white">${j.dryout}</strong></span>
+      <a href="#" onclick="app.switchView('view-6');return false" class="bg-green-900/40 px-2.5 py-1.5 rounded border border-green-700/50 hover:bg-green-800/50 transition-colors cursor-pointer group">
+        <span class="text-[9px] uppercase font-bold tracking-widest text-green-500 mr-1.5">Invoice Amount:</span><strong class="text-green-400 group-hover:text-green-300">$${j.invoice.toLocaleString('en-US',{minimumFractionDigits:2})}</strong>
+        <i class="fa-solid fa-arrow-up-right-from-square text-[8px] text-green-600 ml-1"></i>
+      </a>
+    </div>`;
+  },
+
+  /* ═══ TAB 1: SCOPE, MOISTURE & DEMO ═══ */
+  renderTab1() {
+    let h = '';
+    // Extenuating Circumstances
+    h += `<div class="card bg-red-50/80 border-2 border-red-300 collapsible">
+      <div class="select-right"><span>Select</span><input type="checkbox" class="pdf-cb" data-sel="extenuating"></div>
+      <div class="collapse-hdr flex items-center gap-2 mb-3" onclick="app.toggle(this)">
+        <i class="fa-solid fa-chevron-down collapse-icon text-red-400 text-xs"></i>
+        <h2 class="text-sm font-black text-red-800 uppercase tracking-widest flex items-center gap-2"><i class="fa-solid fa-triangle-exclamation text-red-600"></i>Extenuating Circumstances</h2>
+      </div>
+      <div class="collapse-body space-y-2">`;
+    DATA.extenuating.forEach(e => {
+      h += `<div class="bg-white border border-red-200 rounded-lg p-3 text-sm text-red-900/90 leading-relaxed font-semibold italic flex items-start gap-3">
+        <span class="shrink-0 bg-red-100 text-red-700 text-[10px] font-black px-2 py-0.5 rounded border border-red-300 uppercase tracking-wider not-italic">${e.date}</span>
+        <span class="flex-1">${e.text}</span>
+        <span class="shrink-0 text-[10px] text-primary font-bold uppercase not-italic">Tech: ${e.tech}</span>
+      </div>`;
+    });
+    h += `</div></div>`;
+
+    // Rooms — combined moisture + demo
+    DATA.rooms.forEach((room, ri) => {
+      const chIdx = DATA.chambers.findIndex(c => c.id === room.chamber);
+      h += `<div id="room-${ri}" class="card !p-0 overflow-hidden collapsible">
+        <div class="bg-slate-800 text-white px-5 py-3.5 flex flex-wrap gap-3 justify-between items-center border-b-[3px] border-primary collapse-hdr" onclick="app.toggle(this)">
+          <div>
+            <h3 class="font-black text-base uppercase tracking-wider flex items-center gap-2">
+              <i class="fa-solid fa-chevron-down collapse-icon text-slate-400 text-xs"></i>
+              <i class="fa-solid fa-house-chimney-crack text-primary"></i>${room.name}
+              <span class="text-slate-500 text-sm mx-1">|</span>
+              <a href="#" onclick="app.switchView('view-2','eq-${chIdx}');event.stopPropagation();return false" class="link-chamber text-sm tracking-widest">${room.chamber} <i class="fa-solid fa-arrow-up-right-from-square text-[8px] ml-0.5"></i></a>
+            </h3>
+            <p class="text-[10px] text-slate-400 font-mono mt-1 ml-7 font-bold">L: ${room.l}' × W: ${room.w}' × H: ${room.h}' <span class="mx-2 text-slate-600">|</span><span class="text-blue-400 bg-blue-900/30 px-1.5 py-0.5 rounded uppercase font-black">Volume: ${room.vol.toLocaleString()} CF</span></p>
+          </div>
+          <div class="flex items-center gap-2 bg-black/30 px-2.5 py-1 rounded border border-slate-700" onclick="event.stopPropagation()">
+            <span class="text-[8px] uppercase font-bold text-slate-500 tracking-widest">Select Room</span>
+            <input type="checkbox" class="pdf-cb" data-sel="room-${ri}">
+          </div>
         </div>
-        <nav class="flex-1 py-6 space-y-1.5 px-4 overflow-y-auto">
-            <p class="text-[10px] text-slate-600 font-bold uppercase tracking-[0.2em] mb-4 px-3">Job Views</p>
-            <button onclick="app.switchView('view-loss', this)" class="nav-btn active">
-                <i class="fa-solid fa-house-crack w-6 text-center mr-3 text-primary/60"></i> 1. Loss Details & Scope
-            </button>
-            <button onclick="app.switchView('view-equip', this)" class="nav-btn">
-                <i class="fa-solid fa-gears w-6 text-center mr-3 text-primary/60"></i> 2. Equipment & Atmos
-            </button>
-            <button onclick="app.switchView('view-ops', this)" class="nav-btn">
-                <i class="fa-solid fa-clipboard-check w-6 text-center mr-3 text-primary/60"></i> 3. Operations & Photos
-            </button>
-        </nav>
-        <div class="px-6 py-5 border-t border-slate-800/60 bg-black/30">
-            <p class="text-[9px] text-slate-600 uppercase tracking-[0.2em] font-bold mb-1.5">Active Job</p>
-            <h2 class="font-bold text-sm text-slate-200 truncate" id="side-name">--</h2>
-            <p class="text-xs text-primary font-mono mt-1 font-semibold tracking-wide" id="side-job-id">--</p>
+        <div class="collapse-body p-5 space-y-6">`;
+
+      // Moisture table
+      h += `<div>
+        <h4 class="font-black text-[10px] text-slate-500 uppercase tracking-widest mb-2 flex items-center gap-2"><div class="w-1.5 h-1.5 rounded-full bg-blue-500"></div>Material Moisture Mapping</h4>
+        <div class="overflow-x-auto rounded-lg border border-slate-200 shadow-sm">
+          <table class="w-full text-left"><thead class="thead-s"><tr>
+            <th>Material</th><th class="text-center border-x border-slate-200">Dry Std %</th>
+            <th class="text-center blue-col">Day 1<br>(Apr 18)</th><th class="text-center blue-col">Day 2<br>(Apr 19)</th><th class="text-center blue-col">Day 3<br>(Apr 20)</th><th class="text-center blue-col">Day 4<br>(Apr 21)</th><th class="text-center blue-col">Day 5<br>(Apr 22)</th>
+            <th class="border-l border-slate-200">Job Specific Notes</th>
+          </tr></thead><tbody class="divide-y divide-slate-100 bg-white">`;
+      room.moisture.forEach(m => {
+        h += `<tr class="trow"><td class="font-bold text-slate-800">${m.mat}</td><td class="text-center font-bold text-slate-500 border-x border-slate-200">${m.std}</td>
+          <td class="text-center font-black text-blue-800 bg-blue-50/30">${m.d1}</td><td class="text-center font-black text-blue-800 bg-blue-50/30">${m.d2}</td><td class="text-center font-black text-blue-800 bg-blue-50/30">${m.d3}</td><td class="text-center font-black text-blue-800 bg-blue-50/30">${m.d4}</td><td class="text-center font-black text-blue-800 bg-blue-50/30">${m.d5}</td>
+          <td class="text-xs italic text-slate-600 border-l border-slate-200">${m.notes}</td></tr>`;
+      });
+      h += `</tbody></table></div></div>`;
+
+      // Demo table
+      h += `<div>
+        <h4 class="font-black text-[10px] text-slate-500 uppercase tracking-widest mb-2 flex items-center gap-2"><div class="w-1.5 h-1.5 rounded-full bg-red-500"></div>Demolition Scope</h4>
+        <div class="overflow-x-auto rounded-lg border border-slate-200 shadow-sm">
+          <table class="w-full text-left"><thead class="thead-s"><tr>
+            <th>Date & Day Removed</th><th>Material Removed</th><th class="text-center">Qty (SQFT/LF)</th><th class="text-center border-x border-slate-200">After Hrs</th><th class="w-[30%]">Job Specific Notes</th><th class="text-center">Photo Link</th>
+          </tr></thead><tbody class="divide-y divide-slate-100 bg-white">`;
+      room.demo.forEach(d => {
+        h += `<tr class="trow"><td class="font-bold font-mono text-slate-600 text-[11px]">${d.date}</td><td class="font-bold text-slate-900">${d.mat}</td>
+          <td class="text-center font-black text-blue-800 bg-blue-50/20">${d.qty}</td>
+          <td class="text-center border-x border-slate-200">${d.afterHrs ? '<span class="badge-ah"><i class="fa-solid fa-moon"></i>Yes</span>' : '<span class="text-slate-300">—</span>'}</td>
+          <td class="text-xs italic text-slate-600">${d.notes}</td>
+          <td class="text-center"><a href="${d.link}" class="text-[9px] text-primary hover:bg-primary hover:text-white font-bold uppercase tracking-wider bg-primary/10 px-2 py-1 rounded transition-colors inline-flex items-center gap-1"><i class="fa-solid fa-link"></i>View</a></td></tr>`;
+      });
+      h += `</tbody></table></div></div>`;
+      h += `</div></div>`;
+    });
+
+    document.getElementById('view-1').innerHTML = h;
+  },
+
+  /* ═══ TAB 2: EQUIPMENT & ATMOS (per-chamber) ═══ */
+  renderTab2() {
+    let h = '';
+    DATA.chambers.forEach((ch, ci) => {
+      h += `<div id="eq-${ci}" class="card !p-0 overflow-hidden collapsible">
+        <div class="bg-slate-800 text-white px-5 py-3.5 flex flex-wrap gap-3 justify-between items-center border-b-[3px] border-primary collapse-hdr" onclick="app.toggle(this)">
+          <div>
+            <h3 class="font-black text-base uppercase tracking-wider flex items-center gap-2">
+              <i class="fa-solid fa-chevron-down collapse-icon text-slate-400 text-xs"></i>
+              <i class="fa-solid fa-cubes text-primary"></i>${ch.id}
+            </h3>
+            <p class="text-[10px] text-slate-400 font-medium mt-0.5 ml-7">${ch.rooms.join(' · ')}</p>
+            <p class="text-[10px] text-slate-400 font-mono mt-1 ml-7 font-bold">L: ${ch.l}' × W: ${ch.w}' × H: ${ch.h}' <span class="mx-2 text-slate-600">|</span><span class="text-blue-400 bg-blue-900/30 px-1.5 py-0.5 rounded uppercase font-black">Volume: ${ch.vol.toLocaleString()} CF</span></p>
+          </div>
+          <div class="flex items-center gap-2.5" onclick="event.stopPropagation()">
+            ${ch.aham ? '<span class="bg-green-100 text-green-700 font-black text-[9px] px-2 py-1 rounded shadow-sm border border-green-300 uppercase tracking-wider"><i class="fa-solid fa-check-circle mr-1"></i>AHAM Met</span>' : '<span class="bg-red-100 text-red-700 font-bold text-[9px] px-2 py-1 rounded shadow-sm border border-red-300 uppercase">⚠️ AHAM Not Met</span>'}
+            <input type="checkbox" class="pdf-cb" data-sel="eq-${ci}">
+          </div>
         </div>
-    </aside>
+        <div class="collapse-body">
+          <!-- Water Class -->
+          <div class="bg-blue-50 border-b border-blue-200 px-5 py-3 flex flex-wrap items-center gap-3">
+            <span class="bg-blue-800 text-white text-[10px] font-black px-3 py-1 rounded uppercase tracking-wider shadow-sm">${ch.waterClass}</span>
+            <span class="text-xs text-blue-900 font-medium italic">${ch.classDesc}</span>
+          </div>
 
-    <!-- MAIN APP AREA -->
-    <main class="flex-1 flex flex-col h-full relative overflow-hidden bg-slate-50">
-        <!-- HEADER -->
-        <header class="bg-headerBg border-b border-slate-700/50 px-8 py-5 shrink-0 shadow-xl z-10 flex flex-col xl:flex-row justify-between items-start xl:items-center gap-5">
-            <div id="card-job-info" class="w-full xl:w-auto relative text-white bg-transparent p-0 shadow-none border-none">
-                <div class="flex items-center flex-wrap gap-x-5 gap-y-2 mb-2">
-                    <h1 class="text-3xl font-black tracking-tight flex items-center gap-3"><i class="fa-solid fa-building-circle-check text-primary/80"></i><span id="header-name">--</span></h1>
-                    <span class="bg-primary/95 text-white text-[11px] px-3 py-1 rounded-md font-mono font-bold tracking-wider shadow-sm">JOB: <span id="header-job">--</span></span>
-                    <span class="bg-white/10 text-slate-300 text-[11px] px-3 py-1 rounded-md font-mono font-bold tracking-wider border border-white/10">CLAIM: <span id="header-claim">--</span></span>
-                </div>
-                <div class="flex flex-wrap items-center gap-x-6 gap-y-1.5 text-[13px] text-slate-400 font-medium">
-                    <span class="flex items-center gap-1.5"><i class="fa-solid fa-location-dot text-primary/70"></i> <span id="header-address">--</span></span>
-                    <span class="flex items-center gap-1.5"><i class="fa-solid fa-user-hard-hat text-primary/70"></i> Mit Lead: <span id="header-lead" class="text-slate-200 font-bold">--</span></span>
-                </div>
-            </div>
-            <!-- All ACTION BUTTONS IDENTICAL -->
-            <div class="flex flex-wrap gap-2.5 w-full xl:w-auto justify-end shrink-0">
-                <button class="action-btn"><i class="fa-regular fa-file-pdf mr-1.5 text-primary"></i> 24-HR PDF</button>
-                <button class="action-btn"><i class="fa-regular fa-file-pdf mr-1.5 text-primary"></i> DMO Approval</button>
-                <button class="action-btn"><i class="fa-solid fa-file-pdf mr-1.5 text-primary"></i> Adjuster Report</button>
-                <button class="action-btn"><i class="fa-regular fa-image mr-1.5 text-primary"></i> Photos</button>
-                <button class="action-btn"><i class="fa-solid fa-sack-dollar mr-1.5 text-primary"></i> $3k Request</button>
-            </div>
-        </header>
+          <!-- Equipment Table -->
+          <div class="overflow-x-auto">
+          <table class="w-full text-left"><thead class="thead-s"><tr>
+            <th>Equipment Placed</th><th class="text-center border-x border-slate-200">Install Date & Day</th><th class="text-center border-r border-slate-200">Pull Date & Day</th><th class="text-center blue-col">Total Days</th><th class="w-[28%]">Equipment Notes</th><th class="text-center w-10">Sel</th>
+          </tr></thead><tbody class="divide-y divide-slate-100 bg-white">`;
+      ch.equipment.forEach((e, ei) => {
+        h += `<tr class="trow"><td class="font-bold text-slate-800"><i class="fa-solid fa-fan text-slate-400 mr-1.5"></i>${e.model}</td>
+          <td class="text-center font-mono text-[10px] font-bold text-slate-500 border-x border-slate-200">${e.ins}</td>
+          <td class="text-center font-mono text-[10px] font-bold text-slate-500 border-r border-slate-200">${e.pull}</td>
+          <td class="text-center font-black text-blue-800 bg-blue-50/25 text-sm">${e.days}</td>
+          <td class="text-xs italic text-slate-600">${e.notes}</td>
+          <td class="text-center"><input type="checkbox" class="pdf-cb" data-sel="eq-${ci}-${ei}"></td></tr>`;
+      });
+      h += `</tbody></table></div>`;
 
-        <!-- VIEWS -->
-        <div class="flex-1 overflow-y-auto p-6 lg:p-8 relative" id="views-wrapper">
-            
-            <!-- ╔═══════════════════════════════════════╗ -->
-            <!-- ║ TAB 1: LOSS DETAILS & SCOPE           ║ -->
-            <!-- ╚═══════════════════════════════════════╝ -->
-            <section id="view-loss" class="max-w-[1400px] mx-auto block">
-                <!-- Extenuating Circumstances -->
-                <div id="card-alert" class="printable-card bg-red-50/80 border-2 border-red-300">
-                    <div class="absolute top-4 right-4 pdf-controls"><input type="checkbox" class="pdf-checkbox" data-target="card-alert" checked></div>
-                    <h2 class="text-sm font-black text-red-800 uppercase tracking-widest mb-2 flex items-center"><i class="fa-solid fa-triangle-exclamation text-red-600 mr-2 text-base"></i> Extenuating Circumstances</h2>
-                    <p class="text-sm text-red-900/90 leading-relaxed font-semibold italic" id="txt-alert">--</p>
-                </div>
-                
-                <!-- NEW: Cause of Loss & Origin Room -->
-                <div id="card-col" class="printable-card border-l-4 border-l-primary flex flex-col md:flex-row gap-6 md:gap-12 items-start md:items-center">
-                    <div class="absolute top-4 right-4 pdf-controls"><input type="checkbox" class="pdf-checkbox" data-target="card-col" checked></div>
-                    <div class="flex-1">
-                        <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-1">Cause of Loss (COL)</p>
-                        <p class="font-black text-xl text-slate-800 tracking-tight" id="txt-col">--</p>
-                    </div>
-                    <div class="flex-1">
-                        <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-1">Origin Room</p>
-                        <p class="font-black text-xl text-slate-800 tracking-tight" id="txt-origin">--</p>
-                    </div>
-                </div>
+      // Per-Chamber Atmospherics
+      h += `<div class="border-t-2 border-slate-200">
+        <div class="bg-slate-50 px-5 py-2 border-b border-slate-200">
+          <h4 class="font-black text-[10px] text-slate-600 uppercase tracking-widest flex items-center gap-2"><i class="fa-solid fa-wind text-primary"></i>Atmospheric Readings — ${ch.id}</h4>
+        </div>
+        <div class="overflow-x-auto">
+        <table class="w-full text-left whitespace-nowrap"><thead class="thead-s"><tr>
+          <th>Date & Day</th>
+          <th class="text-center border-l border-slate-200">Outside<br><span class="text-slate-400 font-normal">T / RH%</span></th>
+          <th class="text-center">Unaffected<br><span class="text-slate-400 font-normal">T / RH%</span></th>
+          <th class="text-center border-l border-slate-200 font-black text-slate-700">Chamber<br><span class="text-slate-500 font-normal">T / RH%</span></th>
+          <th class="text-center blue-col border-r border-slate-200">Dehu Out<br><span class="font-normal">T / RH%</span></th>
+          <th class="w-[24%]">Associated Tech Notes</th>
+          <th class="text-center w-10">Sel</th>
+        </tr></thead><tbody class="divide-y divide-slate-100 bg-white">`;
+      (ch.atmos || []).forEach((a, ai) => {
+        h += `<tr class="trow">
+          <td class="font-bold font-mono text-slate-700">${a.date}</td>
+          <td class="text-center border-l border-slate-200">${a.out}</td><td class="text-center">${a.un}</td>
+          <td class="text-center font-bold text-slate-900 border-l border-slate-200">${a.ch}</td>
+          <td class="text-center font-black text-blue-700 bg-blue-50/30 border-r border-slate-200">${a.de}</td>
+          <td class="text-xs italic text-slate-500">${a.notes} <span class="text-[9px] text-primary font-bold uppercase not-italic ml-1">— ${a.tech}</span></td>
+          <td class="text-center"><input type="checkbox" class="pdf-cb" data-sel="atmos-${ci}-${ai}"></td></tr>`;
+      });
+      h += `</tbody></table></div></div>`;
+      h += `</div></div>`;
+    });
 
-                <!-- Job Notes / Narrative -->
-                <div id="card-narrative" class="printable-card">
-                    <div class="absolute top-4 right-4 pdf-controls flex gap-2 items-center"><span class="text-xs font-bold text-slate-400 uppercase">Select All</span><input type="checkbox" class="pdf-checkbox max-sel" onchange="app.toggleChecks('narrative-content', this.checked)"></div>
-                    <h2 class="card-title"><i class="fa-solid fa-book-open text-primary mr-2"></i> Job Notes / Narrative</h2>
-                    <div id="narrative-content"></div>
-                </div>
+    document.getElementById('view-2').innerHTML = h;
+  },
 
-                <!-- Material Moisture Mapping -->
-                <div id="card-moisture" class="printable-card">
-                    <div class="absolute top-4 right-4 pdf-controls flex gap-2 items-center"><span class="text-xs font-bold text-slate-400 uppercase">Select All</span><input type="checkbox" class="pdf-checkbox max-sel" onchange="app.toggleChecks('moisture-content', this.checked)"></div>
-                    <h2 class="card-title"><i class="fa-solid fa-droplet text-primary mr-2"></i> Material Moisture Mapping</h2>
-                    <div id="moisture-content"></div>
-                </div>
+  /* ═══ TAB 3: OPERATIONS & NOTES ═══ */
+  renderTab3() {
+    let h = '';
 
-                <!-- Demolition Scope -->
-                <div id="card-demolition" class="printable-card">
-                    <div class="absolute top-4 right-4 pdf-controls flex gap-2 items-center"><span class="text-xs font-bold text-slate-400 uppercase">Select All</span><input type="checkbox" class="pdf-checkbox max-sel" onchange="app.toggleChecks('demo-content', this.checked)"></div>
-                    <h2 class="card-title"><i class="fa-solid fa-hammer text-primary mr-2"></i> Demolition Scope</h2>
-                    <div id="demo-content"></div>
-                </div>
-                
-                <!-- Docs -->
-                <div id="card-docs" class="printable-card">
-                    <div class="absolute top-4 right-4 pdf-controls flex gap-2 items-center"><span class="text-xs font-bold text-slate-400 uppercase">Select All</span><input type="checkbox" class="pdf-checkbox max-sel" onchange="app.toggleChecks('docs-content', this.checked)"></div>
-                    <h2 class="card-title"><i class="fa-regular fa-folder-open text-primary mr-2"></i> Available Documents</h2>
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4" id="docs-content"></div>
-                </div>
-            </section>
+    // Time Logs
+    h += `<div class="card !p-0 overflow-hidden collapsible">
+      <div class="bg-slate-100 px-5 py-3 flex justify-between items-center border-b border-slate-300 collapse-hdr" onclick="app.toggle(this)">
+        <h3 class="font-black text-slate-800 text-sm uppercase tracking-wider flex items-center gap-2"><i class="fa-solid fa-chevron-down collapse-icon text-slate-400 text-xs"></i><i class="fa-solid fa-clock-rotate-left text-primary"></i>Tech Time Logs</h3>
+        <div onclick="event.stopPropagation()"><input type="checkbox" class="pdf-cb" data-sel="time-all" onchange="app.selAll('time-body',this.checked)"></div>
+      </div>
+      <div class="collapse-body overflow-x-auto" id="time-body">
+        <table class="w-full text-left whitespace-nowrap"><thead class="thead-s"><tr>
+          <th class="border-r border-slate-200">Date & Day</th><th>Tech Name(s)</th><th class="text-center border-x border-slate-200">Arrival</th><th class="text-center">End Time</th><th class="text-center blue-col border-l border-slate-200">Travel (Min)</th><th class="text-center blue-col border-r border-slate-200">Demo (Min)</th><th class="w-[24%]">Multi-Tech Justification</th><th class="text-center w-10">Sel</th>
+        </tr></thead><tbody class="divide-y divide-slate-100 bg-white">`;
+    DATA.timeLogs.forEach((t, ti) => {
+      h += `<tr class="trow">
+        <td class="font-bold font-mono text-[11px] border-r border-slate-200 leading-tight">${t.date}${t.aft ? '<br><span class="badge-ah mt-1 inline-flex"><i class="fa-solid fa-moon"></i>After Hrs</span>' : ''}</td>
+        <td class="font-bold text-xs text-slate-800">${t.techs}</td>
+        <td class="text-center border-x border-slate-200 font-bold">${t.arr}</td><td class="text-center font-bold">${t.end}</td>
+        <td class="text-center font-mono font-bold text-blue-800 bg-blue-50/30 border-l border-slate-200">${t.tra}</td>
+        <td class="text-center font-mono font-black text-blue-800 bg-blue-50/50 border-r border-slate-200 text-base">${t.dem}</td>
+        <td class="text-xs italic text-slate-600">${t.just}</td>
+        <td class="text-center"><input type="checkbox" class="pdf-cb" data-sel="tl-${ti}"></td></tr>`;
+    });
+    h += `</tbody></table></div></div>`;
 
-            <!-- ╔═══════════════════════════════════════╗ -->
-            <!-- ║ TAB 2: EQUIPMENT & ATMOS              ║ -->
-            <!-- ╚═══════════════════════════════════════╝ -->
-            <section id="view-equip" class="max-w-[1400px] mx-auto hidden">
-                <div id="card-equip" class="printable-card">
-                    <div class="absolute top-4 right-4 pdf-controls"><input type="checkbox" class="pdf-checkbox" data-target="card-equip"></div>
-                    <h2 class="card-title"><i class="fa-solid fa-gears text-primary mr-2"></i> Equipment Inventory</h2>
-                    <div id="equipment-content"></div>
-                </div>
+    // Job Notes / Narrative (directly after time logs)
+    h += `<div class="card collapsible">
+      <div class="select-right"><span>Select All</span><input type="checkbox" class="pdf-cb" onchange="app.selAll('narr-body',this.checked)"></div>
+      <div class="collapse-hdr flex items-center gap-2 mb-3" onclick="app.toggle(this)">
+        <i class="fa-solid fa-chevron-down collapse-icon text-slate-400 text-xs"></i>
+        <h2 class="card-title !mb-0"><i class="fa-solid fa-book-open text-primary mr-2"></i>Job Notes / Narrative</h2>
+      </div>
+      <div class="collapse-body" id="narr-body">`;
+    const dates = [...new Set(DATA.narratives.map(n => n.date))];
+    dates.forEach(d => {
+      h += `<h3 class="font-black text-slate-800 text-sm uppercase mb-2 mt-4 first:mt-0 border-b border-slate-200 pb-1 text-primary"><i class="fa-regular fa-calendar mr-1.5"></i>${d}</h3>
+        <div class="space-y-2 mb-4 pl-2 border-l-2 border-slate-100">`;
+      DATA.narratives.filter(n => n.date === d).forEach(n => {
+        h += `<div class="bg-white rounded-lg p-3 text-sm text-slate-700 border border-slate-200 flex items-center gap-3 shadow-sm hover:border-primary/40 transition-colors">
+          <span class="font-bold text-slate-900 bg-slate-100 px-2 py-0.5 rounded shadow-sm text-[10px] uppercase shrink-0 tracking-widest border border-slate-200">${n.room}</span>
+          <div class="flex-1">${n.notes} <span class="mx-1 text-slate-300">—</span><span class="text-[9px] font-bold text-primary uppercase tracking-wider">Tech: ${n.tech}</span></div>
+          <input type="checkbox" class="pdf-cb ml-auto shrink-0" data-sel="${n.id}">
+        </div>`;
+      });
+      h += `</div>`;
+    });
+    h += `</div></div>`;
 
-                <div id="card-atmos" class="printable-card">
-                    <div class="absolute top-4 right-4 pdf-controls"><input type="checkbox" class="pdf-checkbox" data-target="card-atmos"></div>
-                    <h2 class="card-title"><i class="fa-solid fa-wind text-primary mr-2"></i> Atmospheric Readings</h2>
-                    <div id="atmos-content"></div>
-                </div>
-            </section>
+    // Billables & PPE (with photo links)
+    h += `<div class="card collapsible">
+      <div class="select-right"><span>Select</span><input type="checkbox" class="pdf-cb" data-sel="ppe"></div>
+      <div class="collapse-hdr flex items-center gap-2 mb-3" onclick="app.toggle(this)">
+        <i class="fa-solid fa-chevron-down collapse-icon text-slate-400 text-xs"></i>
+        <h2 class="card-title !mb-0"><i class="fa-solid fa-boxes-stacked text-primary mr-2"></i>Billables & PPE</h2>
+      </div>
+      <div class="collapse-body">
+        <div class="overflow-x-auto rounded-lg border border-slate-200 shadow-sm">
+          <table class="w-full text-left"><thead class="thead-s"><tr>
+            <th>Item</th><th class="text-center border-x border-slate-200">Quantity</th><th class="text-center">Photo Link</th>
+          </tr></thead><tbody class="divide-y divide-slate-100 bg-white">`;
+    DATA.ppe.forEach(p => {
+      h += `<tr class="trow">
+        <td class="font-bold text-slate-800">${p.item}</td>
+        <td class="text-center font-black text-slate-700 border-x border-slate-200 bg-slate-50/50">${p.qty}</td>
+        <td class="text-center"><a href="${p.link}" class="text-[9px] text-primary hover:bg-primary hover:text-white font-bold uppercase tracking-wider bg-primary/10 px-2 py-1 rounded transition-colors inline-flex items-center gap-1"><i class="fa-solid fa-link"></i>View</a></td>
+      </tr>`;
+    });
+    h += `</tbody></table></div></div></div>`;
 
-            <!-- ╔═══════════════════════════════════════╗ -->
-            <!-- ║ TAB 3: OPERATIONS, LOGS & PHOTOS      ║ -->
-            <!-- ╚═══════════════════════════════════════╝ -->
-            <section id="view-ops" class="max-w-[1400px] mx-auto hidden">
-                <div id="card-timelog" class="printable-card">
-                    <div class="absolute top-4 right-4 pdf-controls"><input type="checkbox" class="pdf-checkbox" data-target="card-timelog"></div>
-                    <h2 class="card-title"><i class="fa-solid fa-clock-rotate-left text-primary mr-2"></i> Tech Time Logs</h2>
-                    <div id="timelog-content"></div>
-                </div>
+    document.getElementById('view-3').innerHTML = h;
+  },
 
-                <div id="card-ppe" class="printable-card">
-                    <div class="absolute top-4 right-4 pdf-controls"><input type="checkbox" class="pdf-checkbox" data-target="card-ppe"></div>
-                    <h2 class="card-title"><i class="fa-solid fa-boxes-stacked text-primary mr-2"></i> Billables & PPE</h2>
-                    <div id="ppe-content"></div>
-                </div>
+  /* ═══ TAB 4: PHOTO GALLERY ═══ */
+  renderTab4Photos() {
+    let h = `<div class="card collapsible">
+      <div class="select-right"><span>Select All</span><input type="checkbox" class="pdf-cb" onchange="app.selAll('photo-grid',this.checked)"></div>
+      <div class="collapse-hdr flex items-center gap-2 mb-3" onclick="app.toggle(this)">
+        <i class="fa-solid fa-chevron-down collapse-icon text-slate-400 text-xs"></i>
+        <h2 class="card-title !mb-0"><i class="fa-solid fa-camera text-primary mr-2"></i>Advanced Photo Gallery</h2>
+      </div>
+      <div class="collapse-body">
+        <div class="grid grid-cols-1 sm:grid-cols-4 gap-3 mb-4 bg-slate-50 p-3 rounded-lg border border-slate-200">
+          <div><label class="block text-[9px] font-bold text-slate-500 uppercase mb-1">Search</label><input type="text" id="ph-search" class="w-full bg-white border border-slate-200 text-sm rounded-lg p-2 focus:border-primary focus:outline-none" oninput="app.renderPhotos()"></div>
+          <div><label class="block text-[9px] font-bold text-slate-500 uppercase mb-1">Room</label><select id="ph-room" class="w-full bg-white border border-slate-200 text-sm rounded-lg p-2 focus:border-primary focus:outline-none" onchange="app.renderPhotos()"><option value="All">All Rooms</option></select></div>
+          <div><label class="block text-[9px] font-bold text-slate-500 uppercase mb-1">Date</label><select id="ph-date" class="w-full bg-white border border-slate-200 text-sm rounded-lg p-2 focus:border-primary focus:outline-none" onchange="app.renderPhotos()"><option value="All">All Dates</option></select></div>
+          <div><label class="block text-[9px] font-bold text-slate-500 uppercase mb-1">Phase</label><select id="ph-phase" class="w-full bg-white border border-slate-200 text-sm rounded-lg p-2 focus:border-primary focus:outline-none" onchange="app.renderPhotos()"><option value="All">All Phases</option></select></div>
+        </div>
+        <div id="photo-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"></div>
+      </div>
+    </div>`;
 
-                <div id="card-photos" class="printable-card">
-                    <div class="absolute top-4 right-4 pdf-controls flex gap-2 items-center"><span class="text-xs font-bold text-slate-400 uppercase">Select All</span><input type="checkbox" class="pdf-checkbox max-sel" onchange="app.toggleChecks('photo-content', this.checked)"></div>
-                    <h2 class="card-title"><i class="fa-solid fa-camera text-primary mr-2"></i> Advanced Photo Gallery</h2>
-                    <!-- Filters -->
-                    <div class="grid grid-cols-1 sm:grid-cols-4 gap-4 mb-6 bg-slate-50 p-4 rounded-xl border border-slate-200">
-                        <div><label class="block text-[10px] font-bold text-slate-500 uppercase">Search</label><input type="text" id="p-search" class="w-full bg-white border border-slate-200 text-sm rounded-lg focus:ring-primary p-2"></div>
-                        <div><label class="block text-[10px] font-bold text-slate-500 uppercase">Room</label><select id="p-room" class="w-full bg-white border border-slate-200 text-sm rounded-lg focus:ring-primary p-2"><option value="All">All Rooms</option></select></div>
-                        <div><label class="block text-[10px] font-bold text-slate-500 uppercase">Date</label><select id="p-date" class="w-full bg-white border border-slate-200 text-sm rounded-lg focus:ring-primary p-2"><option value="All">All Dates</option></select></div>
-                        <div><label class="block text-[10px] font-bold text-slate-500 uppercase">Phase</label><select id="p-phase" class="w-full bg-white border border-slate-200 text-sm rounded-lg focus:ring-primary p-2"><option value="All">All Phases</option></select></div>
-                    </div>
-                    <div id="photo-content" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5"></div>
-                </div>
-            </section>
-        </div><!-- wrapper -->
+    document.getElementById('view-4').innerHTML = h;
 
-        <!-- CUSTOM PDF BUTTON -->
-        <button onclick="app.generatePDF()" class="fixed bottom-8 right-8 bg-primary hover:bg-primaryDark text-white px-6 py-4 rounded-full text-sm font-black uppercase tracking-widest shadow-2xl shadow-primary/40 transition-all hover:scale-105 z-50 flex items-center gap-2">
-            <i class="fa-solid fa-file-export text-lg"></i> Generate Custom PDF
-        </button>
-    </main>
+    const rooms = [...new Set(DATA.photos.map(p => p.room))];
+    const pDates = [...new Set(DATA.photos.map(p => p.date))];
+    const phases = [...new Set(DATA.photos.map(p => p.phase))];
+    rooms.forEach(r => document.getElementById('ph-room').innerHTML += `<option value="${r}">${r}</option>`);
+    pDates.forEach(d => document.getElementById('ph-date').innerHTML += `<option value="${d}">${d}</option>`);
+    phases.forEach(p => document.getElementById('ph-phase').innerHTML += `<option value="${p}">${p}</option>`);
+    this.renderPhotos();
+  },
 
-    <!-- ── APPLICATION LOGIC & DATA ──────────────────────────────── -->
-    <script>
-        const mockData = {
-            job: { id: "MIT-2026-04182", claim: "FL26-0100718", name: "Alfredo Carrero", address: "1505 Arezzo Cir, Tampa, FL 33611", mixLead: "Julian Sanmiguel" },
-            loss: { col: "Supply Line Burst", origin: "Kitchen", extenuating: "⚠️ FLAGGED NOTE: Day 2 - Plumber cap-off delayed by 24 hours. Drying prolonged in Kitchen. Elderly resident present during mitigation." },
-            narratives: [
-                { id: "n1", date: "April 18 (Day 1)", room: "Kitchen", notes: "Extracted standing water, set up containment, and initiated drying.", tech: "John Velez" },
-                { id: "n2", date: "April 18 (Day 1)", room: "Living Room", notes: "Set up primary containment and negative air pressure with HEPA filtration.", tech: "Mike Torres" },
-                { id: "n3", date: "April 19 (Day 2)", room: "Master Bath", notes: "Checked atmospheric readings. Dehu processing efficiently.", tech: "Manny" },
-                { id: "n4", date: "April 19 (Day 2)", room: "Kitchen", notes: "Drying progressing. Removed baseboards on affected walls.", tech: "John Velez" }
-            ],
-            moisture: [
-                { room: "Kitchen", l: 14, w: 9, h: 10, vol: 1260, readings: [
-                    { mat: "Drywall (Base)", std: "10%", d1: "95%", d2: "45%", d3: "12%" },
-                    { mat: "Sill Plate (Wood)", std: "12%", d1: "65%", d2: "28%", d3: "14%" }
-                ]},
-                { room: "Living Room", l: 18, w: 12, h: 10, vol: 2160, readings: [
-                    { mat: "Hardwood Subfloor", std: "10%", d1: "99%", d2: "60%", d3: "10%" }
-                ]}
-            ],
-            demo: [
-                { room: "Kitchen", items: [
-                    { date: "04/18/2026", mat: "Laminate Flooring", qty: "140 SQFT", afterHrs: true, notes: "Saturated flooring removed.", tech: "John Velez", link: "#" },
-                    { date: "04/19/2026", mat: "Base Cabinetry", qty: "13 LF", afterHrs: false, notes: "Detached to access plumbing chase.", tech: "Manny", link: "#" }
-                ]},
-                { room: "Living Room", items: [
-                    { date: "04/20/2026", mat: "Engineered Hardwood", qty: "320 SQFT", afterHrs: false, notes: "Glued-down removal.", tech: "John Velez", link: "#" }
-                ]}
-            ],
-            docs: [
-                { id: "d1", name: "W-9", date: "04/18/2026" },
-                { id: "d2", name: "Plumbing Report", date: "04/18/2026" },
-                { id: "d3", name: "Certificate of Satisfaction (COS)", date: "04/22/2026" },
-                { id: "d4", name: "Direction to Pay", date: "04/18/2026" }
-            ],
-            equipment: [
-                { chamber: "Chamber 1", pass: true, items: [
-                    { install: "04/18", pull: "04/22", equip: "LGR 7000Xi Dehumidifier", days: 4, notes: "Primary drying unit." },
-                    { install: "04/18", pull: "04/22", equip: "Velo Pro Air Mover", days: 4, notes: "Directed at wall cavity." }
-                ]},
-                { chamber: "Chamber 2 (Bath)", pass: false, items: [
-                    { install: "04/19", pull: "04/22", equip: "LGR 6000 Dehumidifier", days: 3, notes: "Secondary unit." }
-                ]}
-            ],
-            atmos: [
-                { date: "04/18", out: "82°F / 65%", un: "74°F / 52%", ch: "72°F / 78%", de: "92°F / 22%", notes: "Initial setup phase. High humidity." },
-                { date: "04/19", out: "79°F / 60%", un: "73°F / 50%", ch: "76°F / 55%", de: "90°F / 16%", notes: "Drying progressing normally." },
-                { date: "04/20", out: "80°F / 58%", un: "73°F / 48%", ch: "78°F / 40%", de: "92°F / 12%", notes: "Chamber stabilized." }
-            ],
-            logs: [
-                { date: "04/18/2026", tec: "John V., Mike T.", arr: "05:30 PM", end: "11:45 PM", tra: 45, dem: 240, aft: true, just: "Required 2 techs for heavy content." },
-                { date: "04/19/2026", tec: "Manny", arr: "09:00 AM", end: "10:30 AM", tra: 45, dem: 0, aft: false, just: "—" },
-            ],
-            ppe: [
-                { qty: 4, name: "Tyvek Suits" }, { qty: 2, name: "Nitrile Gloves (Boxes)" }, { qty: 20, name: "Contractor Bags" }
-            ],
-            photos: [
-                { id: "p1", room: "Kitchen", date: "April 18", phase: "Install", url: "https://loremflickr.com/400/300/water,damage,bathroom" },
-                { id: "p2", room: "Living Room", date: "April 18", phase: "Install", url: "https://loremflickr.com/400/300/construction,drywall" },
-                { id: "p3", room: "Master Bath", date: "April 19", phase: "Check", url: "https://loremflickr.com/400/300/flooring,damage" },
-                { id: "p4", room: "Kitchen", date: "April 19", phase: "Check", url: "https://loremflickr.com/400/300/demolition,home" },
-                { id: "p5", room: "Living Room", date: "April 20", phase: "Pull", url: "https://loremflickr.com/400/300/restoration,wood" }
-            ]
-        };
+  renderPhotos() {
+    const s = (document.getElementById('ph-search')?.value || '').toLowerCase();
+    const r = document.getElementById('ph-room')?.value || 'All';
+    const d = document.getElementById('ph-date')?.value || 'All';
+    const p = document.getElementById('ph-phase')?.value || 'All';
+    let f = DATA.photos;
+    if (r !== 'All') f = f.filter(x => x.room === r);
+    if (d !== 'All') f = f.filter(x => x.date === d);
+    if (p !== 'All') f = f.filter(x => x.phase === p);
+    if (s) f = f.filter(x => x.room.toLowerCase().includes(s) || x.phase.toLowerCase().includes(s) || x.date.toLowerCase().includes(s));
 
-        const app = {
-            init() {
-                // Header
-                document.getElementById('side-name').textContent = mockData.job.name;
-                document.getElementById('side-job-id').textContent = mockData.job.id;
-                document.getElementById('header-name').textContent = mockData.job.name;
-                document.getElementById('header-job').textContent = mockData.job.id;
-                document.getElementById('header-claim').textContent = mockData.job.claim;
-                document.getElementById('header-address').textContent = mockData.job.address;
-                document.getElementById('header-lead').textContent = mockData.job.mixLead;
+    const grid = document.getElementById('photo-grid');
+    if (!grid) return;
+    grid.innerHTML = f.length ? f.map(ph => `
+      <div class="photo-card relative">
+        <div class="absolute top-2 left-2 z-10"><label class="flex items-center gap-1 bg-black/75 text-white text-[8px] font-bold uppercase tracking-wider px-2 py-1 rounded cursor-pointer"><input type="checkbox" class="pdf-cb" data-sel="${ph.id}" style="width:12px;height:12px">Select</label></div>
+        <div class="absolute top-2 right-2 z-10"><span class="bg-black/75 text-white text-[8px] font-bold tracking-widest uppercase px-2 py-1 rounded">${ph.phase}</span></div>
+        <img src="${ph.url}" alt="${ph.room}" loading="lazy"/>
+        <div class="p-2.5 text-center border-t border-slate-100">
+          <p class="text-[11px] font-black tracking-wide uppercase text-slate-800">${ph.room}</p>
+          <p class="text-[9px] text-slate-500 font-mono">${ph.date}</p>
+        </div>
+      </div>`).join('') : '<p class="col-span-full text-center text-slate-400 py-10">No photos match your filters.</p>';
+  },
 
-                // T1
-                document.getElementById('txt-alert').textContent = mockData.loss.extenuating;
-                document.getElementById('txt-col').textContent = mockData.loss.col;
-                document.getElementById('txt-origin').textContent = mockData.loss.origin;
-                
-                // Narratives grouped by Date then Room (Checkbox far right)
-                let nHtml = '';
-                const dates = [...new Set(mockData.narratives.map(x=>x.date))];
-                dates.forEach(d => {
-                    nHtml += `<h3 class="font-black text-slate-800 text-sm uppercase mb-3 border-b border-slate-200 pb-1 text-primary"><i class="fa-regular fa-calendar mr-1.5"></i> ${d}</h3><div class="space-y-3 mb-6">`;
-                    mockData.narratives.filter(x=>x.date===d).forEach(n => {
-                        nHtml += `<div id="${n.id}" class="bg-white rounded-lg p-3 text-sm text-slate-700 border border-slate-200 flex items-center gap-3">
-                            <span class="font-bold text-slate-900 bg-slate-100 px-2 py-0.5 rounded shadow-sm text-[11px] uppercase shrink-0">${n.room}</span>
-                            <div class="flex-1">${n.notes} <span class="mx-1 text-slate-300">—</span><span class="text-[10px] font-bold text-primary uppercase">Tech: ${n.tech}</span></div>
-                            <input type="checkbox" class="pdf-checkbox ml-auto" data-target="${n.id}">
-                        </div>`;
-                    });
-                    nHtml += `</div>`;
-                });
-                document.getElementById('narrative-content').innerHTML = nHtml;
+  /* ═══ TAB 5: DOCUMENTS & REPORTING ═══ */
+  renderTab5Docs() {
+    let h = '';
 
-                // Moisture
-                document.getElementById('moisture-content').innerHTML = mockData.moisture.map((m, i) => `
-                    <div id="mblock-${i}" class="border border-slate-200 rounded-lg overflow-hidden mb-5">
-                        <div class="bg-slate-100 px-5 py-3 border-b border-slate-300 flex justify-between items-center">
-                            <div><h5 class="font-black text-slate-800 uppercase text-sm"><i class="fa-solid fa-cube text-slate-400 mr-2"></i>${m.room}</h5><p class="text-[11px] text-slate-500 font-mono mt-1 font-bold">L: ${m.l}' × W: ${m.w}' × H: ${m.h}' <span class="mx-2 text-slate-300">|</span> <span class="font-black text-blue-800 bg-blue-100 px-2 py-0.5 rounded uppercase">Volume: ${m.vol} CF</span></p></div>
-                            <input type="checkbox" class="pdf-checkbox" data-target="mblock-${i}">
-                        </div>
-                        <table class="w-full text-left text-xs text-slate-600">
-                            <thead class="thead-style text-[10px]"><tr><th class="px-5 py-3">Material</th><th class="px-5 py-3 text-center border-x border-slate-200">Dry Std %</th><th class="px-5 py-3 text-center bg-blue-50/50">Day 1</th><th class="px-5 py-3 text-center bg-blue-50/50">Day 2</th><th class="px-5 py-3 text-center bg-blue-50/50">Day 3</th></tr></thead>
-                            <tbody class="divide-y divide-slate-100 bg-white">
-                                ${m.readings.map(r=>`<tr class="table-row-hover"><td class="px-5 py-3 font-bold">${r.mat}</td><td class="px-5 py-3 text-center font-bold text-slate-500 border-x">${r.std}</td><td class="px-5 py-3 text-center font-black text-blue-800 bg-blue-50/20">${r.d1}</td><td class="px-5 py-3 text-center font-black text-blue-800 bg-blue-50/20">${r.d2}</td><td class="px-5 py-3 text-center font-black text-blue-800 bg-blue-50/20">${r.d3}</td></tr>`).join('')}
-                            </tbody>
-                        </table>
-                    </div>`).join('');
+    h += `<div class="card bg-slate-50 border-slate-200">
+      <h2 class="card-title"><i class="fa-solid fa-clipboard-check text-primary mr-2"></i>Reporting Action Center</h2>
+      <p class="text-sm text-slate-600 mb-4 max-w-2xl">Generate fully populated corporate templates using the active job data.</p>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2.5">
+        <button onclick="app.generatePDF('24hr')" class="action-btn"><i class="fa-regular fa-file-pdf text-primary"></i>24-HR PDF</button>
+        <button onclick="app.generatePDF('dmo')" class="action-btn"><i class="fa-solid fa-file-pdf text-primary"></i>DMO Approval</button>
+        <button onclick="app.generatePDF('adjuster')" class="action-btn"><i class="fa-solid fa-file-pdf text-primary"></i>Adjuster Report</button>
+        <button onclick="app.generatePDF('photo')" class="action-btn"><i class="fa-solid fa-image text-primary"></i>Photo Report</button>
+        <button onclick="app.generatePDF('3k')" class="action-btn"><i class="fa-solid fa-sack-dollar text-primary"></i>$3k Limit Request</button>
+      </div>
+    </div>`;
 
-                // Demolition
-                document.getElementById('demo-content').innerHTML = mockData.demo.map((d, i) => `
-                    <div id="dmo-${i}" class="border border-slate-200 rounded-lg overflow-hidden mb-5">
-                        <div class="bg-slate-800 text-white font-black uppercase text-xs px-5 py-2 flex justify-between items-center"><span class="flex items-center"><i class="fa-solid fa-hammer mr-2 text-primary"></i>Demo: ${d.room}</span><input type="checkbox" class="pdf-checkbox" data-target="dmo-${i}"></div>
-                        <table class="w-full text-left text-sm text-slate-600"><thead class="thead-style text-[10px]"><tr><th class="px-5 py-3">Date</th><th class="px-5 py-3">Material</th><th class="px-5 py-3 text-center text-blue-800">Qty</th><th class="px-5 py-3 text-center border-x">After Hrs</th><th class="px-5 py-3 w-1/3">Job Notes</th><th class="px-5 py-3 text-center">Photo</th></tr></thead>
-                        <tbody class="divide-y bg-white">
-                            ${d.items.map(it=>`<tr class="table-row-hover"><td class="px-5 py-4 font-bold font-mono text-xs">${it.date}</td><td class="px-5 py-4 font-bold text-slate-900">${it.mat}</td><td class="px-5 py-4 text-center font-black text-blue-800 text-sm bg-blue-50/20">${it.qty}</td><td class="px-5 py-4 text-center border-x">${it.afterHrs?`<span class="bg-amber-100 text-amber-800 border-amber-300 font-black text-[9px] px-1 py-0.5 rounded shadow-sm border"><i class="fa-solid fa-moon"></i> Yes</span>`:'—'}</td><td class="px-5 py-4 text-xs italic">${it.notes} <span class="block mt-1 text-[9px] text-primary uppercase font-bold not-italic">Tech: ${it.tech}</span></td><td class="px-5 py-4 text-center"><a href="${it.link}" class="text-xs text-primary font-bold bg-primary/10 px-2 py-1 rounded">Link <i class="fa-solid fa-link"></i></a></td></tr>`).join('')}
-                        </tbody></table>
-                    </div>`).join('');
+    h += `<div class="card collapsible">
+      <div class="select-right"><span>Select All</span><input type="checkbox" class="pdf-cb" onchange="app.selAll('docs-grid',this.checked)"></div>
+      <div class="collapse-hdr flex items-center gap-2 mb-3" onclick="app.toggle(this)">
+        <i class="fa-solid fa-chevron-down collapse-icon text-slate-400 text-xs"></i>
+        <h2 class="card-title !mb-0"><i class="fa-regular fa-folder-open text-primary mr-2"></i>Available Documents</h2>
+      </div>
+      <div class="collapse-body" id="docs-grid">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">`;
+    DATA.docs.forEach(doc => {
+      h += `<div class="border border-slate-200 rounded-lg p-3 bg-white flex items-center justify-between hover:border-primary/50 cursor-pointer shadow-sm transition-colors">
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 rounded-lg bg-red-50 text-red-500 flex items-center justify-center"><i class="fa-solid fa-file-pdf"></i></div>
+          <div><p class="font-bold text-xs text-slate-800">${doc.name}</p><p class="text-[8px] text-slate-400 font-mono mt-0.5">${doc.date}</p></div>
+        </div>
+        <div class="flex items-center gap-2">
+          <button class="text-slate-300 hover:text-primary transition-colors" title="View"><i class="fa-solid fa-eye"></i></button>
+          <button class="text-slate-300 hover:text-primary transition-colors" title="Download"><i class="fa-solid fa-download"></i></button>
+          <input type="checkbox" class="pdf-cb" data-sel="${doc.id}">
+        </div>
+      </div>`;
+    });
+    h += `</div></div></div>`;
 
-                // Docs
-                document.getElementById('docs-content').innerHTML = mockData.docs.map(doc => `
-                    <div id="${doc.id}" class="border border-slate-200 rounded-lg p-3 bg-white flex items-center justify-between hover:border-primary/50 cursor-pointer">
-                        <div class="flex items-center gap-3"><div class="w-8 h-8 rounded bg-red-50 text-red-500 flex items-center justify-center"><i class="fa-solid fa-file-pdf"></i></div><div><p class="font-bold text-xs">${doc.name}</p></div></div>
-                        <input type="checkbox" class="pdf-checkbox" data-target="${doc.id}">
-                    </div>
-                `).join('');
+    document.getElementById('view-5').innerHTML = h;
+  },
 
-                // T2: Equipment
-                document.getElementById('equipment-content').innerHTML = mockData.equipment.map((ch, i) => `
-                    <div id="eq-${i}" class="border border-slate-200 bg-white rounded-lg mb-6 overflow-hidden">
-                        <div class="flex items-center justify-between p-4 border-b">
-                            <div><h3 class="font-black text-lg uppercase">${ch.chamber}</h3></div>
-                            <input type="checkbox" class="pdf-checkbox" data-target="eq-${i}">
-                        </div>
-                        <div class="bg-white border-b border-slate-100 px-5 py-2 flex items-center">
-                            <span class="${ch.pass?'bg-green-100 text-green-800 border-green-300':'bg-amber-100 text-amber-800 border-amber-300'} text-xs px-3 py-1 font-bold rounded shadow-sm border uppercase">${ch.pass?'✅ AHAM Met':'⚠️ AHAM Not Met'}</span>
-                        </div>
-                        <table class="w-full text-left text-sm text-slate-600"><thead class="thead-style text-[10px]"><tr><th class="px-5 py-3">Equipment</th><th class="px-5 py-3 text-center border-x">Install</th><th class="px-5 py-3 text-center border-r">Pull</th><th class="px-5 py-3 text-center bg-blue-50/50">Days</th><th class="px-5 py-3">Notes</th></tr></thead>
-                        <tbody class="divide-y">${ch.items.map(e=>`<tr class="table-row-hover"><td class="px-5 py-3 font-bold text-xs uppercase">${e.equip}</td><td class="px-5 py-3 text-center border-x font-mono">${e.install}</td><td class="px-5 py-3 text-center border-r font-mono">${e.pull}</td><td class="px-5 py-3 text-center font-black text-blue-800 bg-blue-50/20">${e.days}</td><td class="px-5 py-3 text-xs italic border-l">${e.notes}</td></tr>`).join('')}</tbody></table>
-                    </div>`).join('');
-                
-                // Atmos
-                document.getElementById('atmos-content').innerHTML = `
-                    <div class="overflow-x-auto rounded-lg border border-slate-200 bg-white"><table class="w-full text-left text-sm text-slate-600 whitespace-nowrap"><thead class="thead-style text-[10px]"><tr><th class="px-5 py-4">Date</th><th class="px-5 py-4 text-center">Outside<br/><span class="text-slate-400 font-normal">T/RH%</span></th><th class="px-5 py-4 text-center">Unaffected<br/><span class="text-slate-400 font-normal">T/RH%</span></th><th class="px-5 py-4 text-center font-black text-slate-800">Chamber<br/><span class="text-slate-500 font-normal">T/RH%</span></th><th class="px-5 py-4 text-center bg-blue-50/50 text-blue-800">Dehu Out<br/><span class="text-blue-500 font-normal">T/RH%</span></th><th class="px-5 py-4 border-l w-1/4">Assoc Tech Notes</th></tr></thead>
-                    <tbody class="divide-y">${mockData.atmos.map(a=>`<tr class="table-row-hover"><td class="px-5 py-3 font-bold font-mono">${a.date}</td><td class="px-5 py-3 text-center">${a.out}</td><td class="px-5 py-3 text-center">${a.un}</td><td class="px-5 py-3 text-center font-bold text-slate-900">${a.ch}</td><td class="px-5 py-3 text-center font-black text-blue-700 bg-blue-50/30">${a.de}</td><td class="px-5 py-3 text-xs italic border-l">${a.notes}</td></tr>`).join('')}</tbody></table></div>`;
+  /* ═══ TAB 6: NEGOTIATIONS CALCULATOR ═══ */
+  renderTab6Calc() {
+    let h = `<div class="card">
+      <h2 class="card-title text-xl border-b border-slate-200 pb-3 mb-5"><i class="fa-solid fa-calculator text-primary mr-2.5"></i>Mitigation Negotiations Calculator</h2>
 
-                // T3: Ops
-                document.getElementById('timelog-content').innerHTML = `<div class="overflow-x-auto rounded-lg border border-slate-200 bg-white"><table class="w-full text-left text-sm text-slate-600"><thead class="thead-style text-[10px]"><tr><th class="px-4 py-3 border-r">Date</th><th class="px-4 py-3">Tech(s)</th><th class="px-4 py-3 text-center border-x">Arrive</th><th class="px-4 py-3 text-center">End</th><th class="px-4 py-3 text-center bg-blue-50/50 text-blue-800 border-l">Travel (m)</th><th class="px-4 py-3 text-center bg-blue-50/50 text-blue-800 border-r">Demo (m)</th><th class="px-4 py-3">Justification</th></tr></thead>
-                <tbody class="divide-y">${mockData.logs.map(l=>`<tr class="table-row-hover"><td class="px-4 py-3 font-bold font-mono text-xs border-r">${l.date}${l.aft?`<span class="block mt-1 bg-amber-100 text-amber-800 font-black text-[9px] px-1 py-0.5 rounded w-max border border-amber-300">AFTER HRS</span>`:''}</td><td class="px-4 py-3 font-bold text-xs">${l.tec}</td><td class="px-4 py-3 text-center border-x font-bold">${l.arr}</td><td class="px-4 py-3 text-center font-bold">${l.end}</td><td class="px-4 py-3 text-center font-mono font-bold text-blue-800 bg-blue-50/30 border-l">${l.tra}</td><td class="px-4 py-3 text-center font-mono font-black text-blue-800 bg-blue-50/50 border-r text-base">${l.dem}</td><td class="px-4 py-3 text-xs italic">${l.just}</td></tr>`).join('')}</tbody></table></div>`;
-                
-                document.getElementById('ppe-content').innerHTML = `<div class="border border-slate-200 bg-white rounded-lg p-3 grid grid-cols-2 md:grid-cols-3 gap-3">${mockData.ppe.map(p=>`<div class="flex justify-between items-center p-2 bg-slate-50 border border-slate-100 rounded text-sm"><span class="font-bold">${p.name}</span><span class="bg-white font-black px-2 py-0.5 shadow-sm rounded text-xs">${p.qty}</span></div>`).join('')}</div>`;
+      <div class="overflow-x-auto rounded-lg border border-slate-200 shadow-sm mb-5">
+        <table class="w-full text-left"><thead class="thead-s"><tr>
+          <th class="w-[45%]">Line Item Description</th>
+          <th class="text-center border-x border-slate-200">Original ($)</th>
+          <th class="text-center border-r border-slate-200 bg-red-50/50 text-red-700">Deduction ($)</th>
+          <th class="text-center blue-col">Revised ($)</th>
+        </tr></thead><tbody class="divide-y divide-slate-100 bg-white" id="neg-rows">`;
+    DATA.negotiation.lines.forEach((line, i) => {
+      h += `<tr class="trow">
+        <td class="font-bold text-slate-800">${line.desc}</td>
+        <td class="text-center font-mono font-bold text-slate-600 border-x border-slate-200">$${line.orig.toFixed(2)}</td>
+        <td class="text-center border-r border-slate-200 bg-red-50/20">
+          <input type="number" value="0" step="0.01" min="0" class="neg-input w-20 text-center bg-transparent border border-slate-200 rounded px-1 py-0.5 font-mono text-sm focus:border-primary focus:outline-none" data-idx="${i}" oninput="app.calcNeg()">
+        </td>
+        <td class="text-center font-mono font-black text-blue-800 bg-blue-50/25 neg-revised" data-idx="${i}">$${line.orig.toFixed(2)}</td>
+      </tr>`;
+    });
+    h += `</tbody></table></div>
 
-                // T3: Photos
-                const rooms = [...new Set(mockData.photos.map(p=>p.room))];
-                document.getElementById('p-room').innerHTML += rooms.map(r=>`<option value="${r}">${r}</option>`).join('');
-                this.renderPhotos();
-                ['p-search','p-room','p-date','p-phase'].forEach(id => document.getElementById(id).addEventListener('input', ()=>app.renderPhotos()));
-            },
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-5">
+        <div class="bg-slate-50 border border-slate-200 rounded-lg p-4 text-center">
+          <p class="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-1">Original Invoice Total</p>
+          <p class="text-2xl font-black text-slate-800 font-mono" id="neg-orig">$0.00</p>
+        </div>
+        <div class="bg-red-50 border border-red-200 rounded-lg p-4 text-center">
+          <p class="text-[9px] font-bold text-red-500 uppercase tracking-widest mb-1">Total Deductions</p>
+          <p class="text-2xl font-black text-red-600 font-mono" id="neg-deduct">-$0.00</p>
+        </div>
+        <div class="bg-slate-800 rounded-lg p-4 text-center border-b-4 border-green-500 relative overflow-hidden">
+          <i class="fa-solid fa-file-invoice-dollar absolute -right-4 -bottom-4 text-6xl text-slate-700/40 -rotate-12"></i>
+          <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1 relative z-10">Revised Total</p>
+          <p class="text-2xl font-black text-green-400 font-mono relative z-10" id="neg-revised">$0.00</p>
+        </div>
+      </div>
 
-            renderPhotos() {
-                const s = document.getElementById('p-search').value.toLowerCase();
-                const r = document.getElementById('p-room').value;
-                let subset = mockData.photos;
-                if(r !== 'All') subset = subset.filter(p=>p.room===r);
-                if(s) subset = subset.filter(p=>p.room.toLowerCase().includes(s)||p.phase.toLowerCase().includes(s));
-                
-                document.getElementById('photo-content').innerHTML = subset.map(p=>`
-                    <div id="${p.id}" class="photo-card border bg-white rounded-lg overflow-hidden relative shadow-sm">
-                        <div class="absolute top-2 left-2 z-10 flex gap-2"><label class="flex items-center gap-1.5 bg-black/80 text-white text-[9px] font-bold uppercase tracking-wider px-2 py-1 rounded cursor-pointer"><input type="checkbox" class="pdf-checkbox" data-target="${p.id}"> Select</label></div>
-                        <img src="${p.url}?random=${Math.random()}" alt="${p.room}" crossorigin="anonymous"/>
-                        <div class="p-3 text-center border-t border-slate-100"><p class="text-[12px] font-black tracking-wide uppercase">${p.room} - ${p.date}</p></div>
-                    </div>`).join('');
-            },
+      <div class="border-t border-slate-200 pt-4">
+        <label class="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">Negotiation Notes / Justifications</label>
+        <textarea class="w-full bg-slate-50 border border-slate-200 rounded-lg p-3.5 text-sm text-slate-700 focus:outline-none focus:ring-2 ring-primary/20 focus:bg-white transition-colors min-h-[120px]" placeholder="Document specifics on line item kickbacks, e.g. 'Adjuster refused to pay for 4th air mover day despite CAT 3 protocols...'"></textarea>
+      </div>
+    </div>`;
 
-            switchView(vid, btnNode) {
-                document.querySelectorAll('section[id^="view-"]').forEach(v => { v.classList.add('hidden'); v.classList.remove('block'); });
-                document.getElementById(vid).classList.remove('hidden'); document.getElementById(vid).classList.add('block');
-                document.querySelectorAll('.nav-btn').forEach(b => { b.classList.remove('active', 'bg-white/10', 'text-white'); b.classList.add('text-slate-300'); b.querySelector('i').classList.remove('opacity-100', 'text-primary'); });
-                btnNode.classList.add('active', 'bg-white/10', 'text-white'); btnNode.classList.remove('text-slate-300'); btnNode.querySelector('i').classList.add('opacity-100', 'text-primary');
-            },
+    document.getElementById('view-6').innerHTML = h;
+    this.calcNeg();
+  },
 
-            toggleChecks(containerId, isChecked) {
-                document.getElementById(containerId).querySelectorAll('.pdf-checkbox').forEach(cb => cb.checked = isChecked);
-            },
+  calcNeg() {
+    let totalOrig = 0, totalDeduct = 0;
+    DATA.negotiation.lines.forEach((line, i) => {
+      const inp = document.querySelector(`.neg-input[data-idx="${i}"]`);
+      const ded = inp ? parseFloat(inp.value) || 0 : 0;
+      const revised = line.orig - ded;
+      totalOrig += line.orig;
+      totalDeduct += ded;
+      const cell = document.querySelector(`.neg-revised[data-idx="${i}"]`);
+      if (cell) cell.textContent = '$' + revised.toFixed(2);
+    });
+    document.getElementById('neg-orig').textContent = '$' + totalOrig.toFixed(2);
+    document.getElementById('neg-deduct').textContent = '-$' + totalDeduct.toFixed(2);
+    document.getElementById('neg-revised').textContent = '$' + (totalOrig - totalDeduct).toFixed(2);
+  },
 
-            async generatePDF() {
-                const boxes = document.querySelectorAll('.pdf-checkbox:checked');
-                if(boxes.length===0){ alert("Please select internal items (cards, notes, photos) using the orange checkboxes before generating a Custom PDF."); return; }
-                
-                const btn = document.querySelector('button[onclick="app.generatePDF()"]');
-                const origBtn = btn.innerHTML;
-                btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin text-lg"></i> Processing...`;
-                btn.disabled = true;
+  /* ═══ PDF GENERATION ═══ */
+  generatePDF(type) {
+    const names = { '24hr':'24-Hour Report', 'dmo':'DMO Approval', 'adjuster':'Adjuster Report', 'photo':'Photo Report', '3k':'$3,000 Limit Request' };
+    alert(`PDF Generation: "${names[type] || type}"\n\nThis would generate a fully formatted PDF using jsPDF + html2canvas.\n\nJob: ${DATA.job.id}\nClient: ${DATA.job.client}`);
+  },
 
-                document.body.classList.add('pdf-exporting');
+  generateCustomPDF() {
+    const checked = document.querySelectorAll('.pdf-cb:checked');
+    if (checked.length === 0) { alert('Please select at least one item using the checkboxes before generating a Custom PDF.'); return; }
+    const ids = Array.from(checked).map(cb => cb.dataset.sel || 'section').filter(Boolean);
+    alert(`Custom PDF Generation\n\n${checked.length} items selected:\n${ids.join('\n')}\n\nThis would compile selected items into a single PDF using jsPDF + html2canvas.`);
+  }
+};
 
-                // Print container forced rendering dimensions
-                const printWindow = document.createElement('div');
-                printWindow.id = 'print-window';
-                printWindow.style.position = 'absolute'; printWindow.style.left = '-9999px'; printWindow.style.top = '0';
-                printWindow.style.width = '1000px'; printWindow.style.backgroundColor = '#f8fafc';
-                printWindow.style.padding = '40px'; printWindow.style.display = 'flex'; printWindow.style.flexDirection = 'column'; printWindow.style.gap = '20px';
-                document.body.appendChild(printWindow);
-
-                // Inject Header
-                const hdrEl = document.getElementById('card-job-info');
-                if(hdrEl) {
-                    const hdrCln = hdrEl.cloneNode(true);
-                    printWindow.appendChild(hdrCln);
-                }
-
-                // Inject Selected Rows/Cards
-                boxes.forEach(cb => {
-                    if (cb.dataset.target) {
-                        const tgt = document.getElementById(cb.dataset.target);
-                        if (tgt) {
-                            const cln = tgt.cloneNode(true);
-                            cln.style.pageBreakInside = 'avoid';
-                            if (cln.classList.contains('photo-card')) { cln.style.width = '400px'; cln.style.margin = '0 auto'; }
-                            printWindow.appendChild(cln);
-                        }
-                    }
-                });
-
-                // Strip checkboxes deeply from clone tree
-                printWindow.querySelectorAll('.pdf-checkbox, .pdf-controls').forEach(e => e.remove());
-
-                try {
-                    const canvas = await html2canvas(printWindow, { scale: 2, useCORS: true, logging: false });
-                    const imgData = canvas.toDataURL('image/jpeg', 0.95);
-                    const pdf = new jspdf.jsPDF('p', 'mm', 'a4');
-                    const pW = pdf.internal.pageSize.getWidth();
-                    const pH = pdf.internal.pageSize.getHeight();
-                    
-                    const props = pdf.getImageProperties(imgData);
-                    const imgH = (props.height * pW) / props.width;
-
-                    let hLeft = imgH;
-                    let pos = 0;
-
-                    pdf.addImage(imgData, 'JPEG', 0, pos, pW, imgH);
-                    hLeft -= pH;
-                    while (hLeft >= 0) {
-                        pos = hLeft - imgH;
-                        pdf.addPage();
-                        pdf.addImage(imgData, 'JPEG', 0, pos, pW, imgH);
-                        hLeft -= pH;
-                    }
-                    pdf.save(`CustomReport_${mockData.job.id}.pdf`);
-                } catch(err) {
-                    console.error("PDF generation failed", err);
-                    alert("Export Engine Failed: " + err.message);
-                } finally {
-                    document.body.removeChild(printWindow);
-                    document.body.classList.remove('pdf-exporting');
-                    btn.innerHTML = origBtn;
-                    btn.disabled = false;
-                }
-            }
-        };
-
-        document.addEventListener('DOMContentLoaded', () => { app.init(); });
-    </script>
+document.addEventListener('DOMContentLoaded', () => app.init());
+</script>
 </body>
 </html>
